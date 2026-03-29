@@ -1,0 +1,2980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storyboard AI Studio — Nexus Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════
+   RESET & ROOT — COSMIC AURORA THEME
+   ══════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-primary:#06060e;
+  --bg-secondary:#0a0a18;
+  --bg-tertiary:#0e0e22;
+  --bg-card:rgba(14,14,34,0.75);
+  --bg-card-solid:#0e0e22;
+  --bg-elevated:rgba(18,18,42,0.85);
+
+  --glass-1:rgba(120,80,255,0.04);
+  --glass-2:rgba(120,80,255,0.08);
+  --glass-3:rgba(120,80,255,0.12);
+  --glass-border:rgba(120,80,255,0.12);
+  --glass-border-2:rgba(120,80,255,0.22);
+  --glass-border-3:rgba(120,80,255,0.35);
+  --glass-border-bright:rgba(160,120,255,0.5);
+
+  --accent-1:#7c5cfc;
+  --accent-2:#a78bfa;
+  --accent-3:#c4b5fd;
+  --accent-glow:rgba(124,92,252,0.35);
+  --accent-glow-soft:rgba(124,92,252,0.15);
+
+  --aurora-1:#7c5cfc;
+  --aurora-2:#06b6d4;
+  --aurora-3:#a855f7;
+  --aurora-4:#ec4899;
+  --aurora-5:#10b981;
+
+  --cyan:#06b6d4;
+  --cyan-glow:rgba(6,182,212,0.2);
+  --pink:#ec4899;
+  --pink-glow:rgba(236,72,153,0.2);
+  --emerald:#10b981;
+  --emerald-glow:rgba(16,185,129,0.2);
+  --amber:#f59e0b;
+  --amber-glow:rgba(245,158,11,0.2);
+  --red:#ef4444;
+  --red-glow:rgba(239,68,68,0.2);
+  --green:#22c55e;
+  --green-glow:rgba(34,197,94,0.2);
+
+  --text-primary:#f0eeff;
+  --text-secondary:#a8a0cc;
+  --text-tertiary:#6b6394;
+  --text-dim:#3d3660;
+
+  --font:'Inter',system-ui,-apple-system,sans-serif;
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono','Fira Code',monospace;
+
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:16px;
+  --radius-xl:20px;
+  --radius-2xl:24px;
+  --radius-full:9999px;
+
+  --sidebar-w:280px;
+
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md:0 8px 24px rgba(0,0,0,0.4);
+  --shadow-lg:0 16px 48px rgba(0,0,0,0.5);
+  --shadow-xl:0 24px 64px rgba(0,0,0,0.6);
+  --shadow-glow:0 0 40px rgba(124,92,252,0.12);
+  --shadow-glow-strong:0 0 60px rgba(124,92,252,0.25);
+
+  --transition-fast:0.15s cubic-bezier(0.4,0,0.2,1);
+  --transition-base:0.25s cubic-bezier(0.4,0,0.2,1);
+  --transition-spring:0.4s cubic-bezier(0.34,1.56,0.64,1);
+  --transition-smooth:0.5s cubic-bezier(0.22,1,0.36,1);
+}
+
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  font-family:var(--font);
+  font-size:14px;
+  display:flex;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--glass-border-2);border-radius:10px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent-1)}
+::selection{background:var(--accent-1);color:#fff}
+
+/* ══════════════════════════════════════════════════════
+   CANVAS EFFECTS — AURORA + PARTICLES
+   ══════════════════════════════════════════════════════ */
+#fx-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.6}
+
+/* Aurora background gradient overlay */
+.aurora-bg{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(124,92,252,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(6,182,212,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 90%, rgba(168,85,247,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 10% 80%, rgba(16,185,129,0.04) 0%, transparent 50%);
+  animation: aurora-shift 20s ease-in-out infinite alternate;
+}
+@keyframes aurora-shift{
+  0%{opacity:1;filter:hue-rotate(0deg)}
+  50%{opacity:0.8;filter:hue-rotate(15deg)}
+  100%{opacity:1;filter:hue-rotate(-10deg)}
+}
+
+/* ══════════════════════════════════════════════════════
+   GLASS MORPHISM SYSTEM
+   ══════════════════════════════════════════════════════ */
+.glass{
+  background:var(--glass-1);
+  backdrop-filter:blur(24px) saturate(1.4);
+  -webkit-backdrop-filter:blur(24px) saturate(1.4);
+  border:1px solid var(--glass-border);
+}
+.glass-2{
+  background:var(--glass-2);
+  backdrop-filter:blur(20px) saturate(1.3);
+  -webkit-backdrop-filter:blur(20px) saturate(1.3);
+  border:1px solid var(--glass-border-2);
+}
+.glass-3{
+  background:var(--glass-3);
+  backdrop-filter:blur(16px) saturate(1.2);
+  -webkit-backdrop-filter:blur(16px) saturate(1.2);
+  border:1px solid var(--glass-border-3);
+}
+.glass-card{
+  background:linear-gradient(135deg, rgba(14,14,34,0.8), rgba(10,10,24,0.9));
+  backdrop-filter:blur(20px) saturate(1.3);
+  -webkit-backdrop-filter:blur(20px) saturate(1.3);
+  border:1px solid var(--glass-border);
+  position:relative;
+  overflow:hidden;
+}
+.glass-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg, rgba(124,92,252,0.03), transparent 60%);
+  pointer-events:none;border-radius:inherit;
+}
+.glow-accent{box-shadow:var(--shadow-glow)}
+.glow-strong{box-shadow:var(--shadow-glow-strong)}
+
+/* Animated border gradient */
+.border-gradient{position:relative}
+.border-gradient::after{
+  content:'';position:absolute;inset:-1px;border-radius:inherit;
+  background:linear-gradient(135deg, var(--aurora-1), var(--aurora-2), var(--aurora-3));
+  z-index:-1;opacity:0;transition:opacity var(--transition-base);
+}
+.border-gradient:hover::after{opacity:0.3}
+
+/* ══════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ══════════════════════════════════════════════════════ */
+.text-display{
+  font-family:var(--font-display);
+  font-weight:700;
+  letter-spacing:-0.02em;
+  line-height:1.1;
+}
+.text-gradient{
+  background:linear-gradient(135deg, var(--accent-2), var(--cyan), var(--accent-3));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.text-gradient-warm{
+  background:linear-gradient(135deg, var(--accent-1), var(--pink), var(--amber));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.mono{font-family:var(--font-mono);font-size:12px}
+
+/* ══════════════════════════════════════════════════════
+   FORM ELEMENTS
+   ══════════════════════════════════════════════════════ */
+input,textarea,select{
+  font-family:var(--font);
+  font-size:13px;
+  background:rgba(124,92,252,0.04);
+  color:var(--text-primary);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-md);
+  padding:10px 14px;
+  outline:none;
+  transition:all var(--transition-base);
+  width:100%;
+  line-height:1.5;
+}
+input:hover,textarea:hover{border-color:var(--glass-border-2)}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--accent-1);
+  box-shadow:0 0 0 3px rgba(124,92,252,0.12), 0 0 20px rgba(124,92,252,0.08);
+  background:rgba(124,92,252,0.06);
+}
+input::placeholder,textarea::placeholder{color:var(--text-dim)}
+textarea{resize:vertical;min-height:48px;line-height:1.6}
+label{
+  font-size:11px;color:var(--text-tertiary);
+  font-weight:600;text-transform:uppercase;
+  letter-spacing:0.08em;display:block;margin-bottom:5px;
+}
+
+/* ══════════════════════════════════════════════════════
+   BUTTON SYSTEM — AURORA THEMED
+   ══════════════════════════════════════════════════════ */
+button{
+  font-family:var(--font);cursor:pointer;
+  border:none;font-size:13px;font-weight:600;
+  border-radius:var(--radius-md);
+  padding:10px 20px;
+  transition:all var(--transition-spring);
+  position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;gap:6px;
+  white-space:nowrap;
+}
+button:active{transform:scale(0.97)!important}
+
+/* Ripple */
+.ripple{
+  position:absolute;border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  transform:scale(0);animation:ripple-fx 0.6s linear;
+  pointer-events:none;
+}
+@keyframes ripple-fx{to{transform:scale(4);opacity:0}}
+
+.btn-primary{
+  background:linear-gradient(135deg, var(--accent-1), var(--aurora-3));
+  color:#fff;
+  box-shadow:0 4px 16px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.btn-primary:hover{
+  transform:translateY(-2px) scale(1.02);
+  box-shadow:0 8px 32px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.btn-secondary{
+  background:linear-gradient(135deg, var(--cyan), var(--emerald));
+  color:#fff;
+  box-shadow:0 4px 16px var(--cyan-glow);
+}
+.btn-secondary:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--cyan-glow)}
+
+.btn-ghost{
+  background:var(--glass-1);
+  color:var(--text-secondary);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(8px);
+}
+.btn-ghost:hover{
+  color:var(--text-primary);
+  border-color:var(--glass-border-2);
+  background:var(--glass-2);
+  transform:translateY(-1px);
+}
+
+.btn-glass{
+  background:rgba(124,92,252,0.08);
+  color:var(--accent-2);
+  border:1px solid rgba(124,92,252,0.2);
+}
+.btn-glass:hover{
+  background:rgba(124,92,252,0.15);
+  border-color:var(--accent-1);
+  box-shadow:0 0 20px rgba(124,92,252,0.15);
+  transform:translateY(-1px);
+}
+
+.btn-success{
+  background:linear-gradient(135deg, #16a34a, var(--green));
+  color:#fff;box-shadow:0 4px 16px var(--green-glow);
+}
+.btn-success:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--green-glow)}
+
+.btn-danger{
+  background:linear-gradient(135deg,#dc2626, var(--red));
+  color:#fff;box-shadow:0 4px 16px var(--red-glow);
+}
+.btn-danger:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--red-glow)}
+
+.btn-amber{
+  background:linear-gradient(135deg, var(--amber), #f97316);
+  color:#000;font-weight:700;
+  box-shadow:0 4px 16px var(--amber-glow);
+}
+.btn-amber:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--amber-glow)}
+
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-xs{padding:5px 10px;font-size:11px;border-radius:var(--radius-sm)}
+.btn-lg{padding:14px 28px;font-size:15px;border-radius:var(--radius-lg)}
+.btn-icon{padding:8px;min-width:36px;justify-content:center}
+
+button:disabled{opacity:0.3;cursor:not-allowed;transform:none!important;pointer-events:none}
+
+.btn-copied{
+  background:var(--green-glow)!important;
+  color:var(--green)!important;
+  border-color:rgba(34,197,94,0.3)!important;
+}
+
+/* ══════════════════════════════════════════════════════
+   CARD SYSTEM
+   ══════════════════════════════════════════════════════ */
+.card{
+  background:linear-gradient(145deg, rgba(14,14,34,0.85), rgba(10,10,24,0.92));
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  padding:18px;
+  margin-bottom:16px;
+  position:relative;
+  transition:border-color var(--transition-base), box-shadow var(--transition-base);
+}
+.card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(135deg, rgba(124,92,252,0.03) 0%, transparent 60%);
+  pointer-events:none;
+}
+.card:hover{border-color:var(--glass-border-2)}
+.card-accent{border-color:rgba(124,92,252,0.2);box-shadow:var(--shadow-glow)}
+.card h3{
+  font-size:14px;font-weight:700;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+  color:var(--text-primary);
+}
+
+/* Info & Warning boxes */
+.info-box{
+  background:linear-gradient(135deg, rgba(124,92,252,0.06), rgba(6,182,212,0.04));
+  border:1px solid rgba(124,92,252,0.15);
+  border-radius:var(--radius-md);padding:16px;margin-bottom:16px;
+  font-size:12px;line-height:1.8;
+}
+.info-box strong{color:var(--accent-2)}
+.info-box ol{padding-left:18px;margin:6px 0}
+.info-box li{margin-bottom:4px}
+.info-box a{color:var(--cyan);text-decoration:none}
+.info-box a:hover{text-decoration:underline}
+
+.warn-box{
+  background:rgba(245,158,11,0.06);
+  border:1px solid rgba(245,158,11,0.2);
+  border-radius:var(--radius-md);padding:14px;
+  font-size:12px;color:var(--amber);
+}
+
+/* ══════════════════════════════════════════════════════
+   SIDEBAR
+   ══════════════════════════════════════════════════════ */
+#sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);height:100vh;
+  background:linear-gradient(180deg, rgba(10,10,24,0.98) 0%, rgba(6,6,14,0.99) 100%);
+  border-right:1px solid var(--glass-border);
+  display:flex;flex-direction:column;
+  position:relative;z-index:10;
+}
+#sidebar::after{
+  content:'';position:absolute;top:0;right:0;width:1px;height:100%;
+  background:linear-gradient(180deg, transparent 10%, var(--accent-1) 50%, transparent 90%);
+  opacity:0.2;
+}
+
+.s-head{padding:22px 20px;border-bottom:1px solid var(--glass-border)}
+.s-logo{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.s-logo-icon{
+  width:38px;height:38px;border-radius:12px;
+  background:linear-gradient(135deg, var(--accent-1), var(--aurora-2), var(--aurora-3));
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+  box-shadow:0 4px 16px var(--accent-glow);
+  animation:logo-pulse 4s ease-in-out infinite;
+}
+@keyframes logo-pulse{
+  0%,100%{box-shadow:0 4px 16px var(--accent-glow)}
+  50%{box-shadow:0 4px 24px rgba(124,92,252,0.45)}
+}
+.s-logo h1{
+  font-family:var(--font-display);font-size:18px;
+  font-weight:700;letter-spacing:-0.02em;
+  background:linear-gradient(135deg, var(--accent-2), var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.s-head .s-sub{font-size:10px;color:var(--text-dim);font-weight:500;letter-spacing:0.05em;text-transform:uppercase}
+
+/* Project list */
+#plist{flex:1;overflow-y:auto;padding:10px}
+.pi{
+  padding:11px 14px;border-radius:var(--radius-md);cursor:pointer;
+  transition:all var(--transition-spring);
+  margin-bottom:4px;display:flex;align-items:center;gap:8px;
+  font-size:13px;border:1px solid transparent;
+  color:var(--text-secondary);position:relative;
+}
+.pi:hover{
+  background:var(--glass-1);color:var(--text-primary);
+  border-color:var(--glass-border);transform:translateX(4px);
+}
+.pi.active{
+  background:linear-gradient(135deg, rgba(124,92,252,0.12), rgba(6,182,212,0.06));
+  border-color:rgba(124,92,252,0.2);color:var(--text-primary);
+  box-shadow:0 0 20px rgba(124,92,252,0.08);
+}
+.pi.active::before{
+  content:'';position:absolute;left:0;top:20%;bottom:20%;
+  width:3px;border-radius:3px;
+  background:linear-gradient(to bottom, var(--accent-1), var(--cyan));
+  box-shadow:0 0 8px var(--accent-1);
+}
+.pi-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.pi-del{
+  opacity:0;color:var(--red);font-size:14px;
+  background:none;border:none;padding:2px 6px;
+  transition:opacity var(--transition-fast);border-radius:4px;min-width:auto;
+}
+.pi:hover .pi-del{opacity:0.5}
+.pi-del:hover{opacity:1!important;background:var(--red-glow)}
+.pi-count{
+  font-size:10px;color:var(--text-dim);font-family:var(--font-mono);
+  padding:2px 6px;background:var(--glass-1);
+  border:1px solid var(--glass-border);border-radius:var(--radius-full);
+}
+.pi-date{font-size:9px;color:var(--text-dim);font-family:var(--font-mono)}
+
+.s-foot{padding:14px;border-top:1px solid var(--glass-border);display:flex;flex-direction:column;gap:8px}
+
+/* ══════════════════════════════════════════════════════
+   MAIN AREA
+   ══════════════════════════════════════════════════════ */
+#main{flex:1;height:100vh;display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:1}
+
+.topbar{
+  padding:12px 28px;
+  border-bottom:1px solid var(--glass-border);
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:56px;
+  background:rgba(6,6,14,0.9);
+  backdrop-filter:blur(24px);
+  position:relative;z-index:5;
+}
+.topbar h2{
+  font-family:var(--font-display);font-size:18px;font-weight:700;
+  letter-spacing:-0.01em;
+  background:linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.topbar-actions{display:flex;gap:8px;align-items:center}
+
+.progress-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:var(--radius-full);
+  background:var(--glass-1);border:1px solid var(--glass-border);
+  font-size:11px;font-family:var(--font-mono);
+  color:var(--accent-2);
+}
+.progress-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent-1);
+  animation:pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot{
+  0%,100%{opacity:1;box-shadow:0 0 6px var(--accent-1)}
+  50%{opacity:0.4;box-shadow:none}
+}
+
+/* ══════════════════════════════════════════════════════
+   TAB NAVIGATION
+   ══════════════════════════════════════════════════════ */
+.tabs{
+  display:flex;
+  border-bottom:1px solid var(--glass-border);
+  padding:0 28px;
+  background:rgba(6,6,14,0.85);
+  backdrop-filter:blur(20px);
+  overflow-x:auto;gap:2px;position:relative;z-index:4;
+}
+.tabs::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(124,92,252,0.15), transparent);
+}
+.tab{
+  padding:13px 18px;cursor:pointer;
+  font-size:12px;font-weight:600;
+  color:var(--text-dim);
+  border-bottom:2px solid transparent;
+  transition:all var(--transition-base);
+  white-space:nowrap;position:relative;top:1px;
+  letter-spacing:0.02em;
+  display:flex;align-items:center;gap:6px;
+}
+.tab:hover{color:var(--text-secondary)}
+.tab.active{
+  color:var(--accent-2);
+  border-bottom-color:var(--accent-1);
+  text-shadow:0 0 16px rgba(124,92,252,0.4);
+}
+.tab .tab-badge{
+  font-size:9px;font-family:var(--font-mono);
+  padding:1px 5px;border-radius:var(--radius-full);
+  background:var(--glass-2);border:1px solid var(--glass-border);
+  color:var(--text-tertiary);
+}
+.tab.active .tab-badge{background:rgba(124,92,252,0.15);color:var(--accent-2);border-color:rgba(124,92,252,0.25)}
+
+/* Tab content */
+.tc{display:none;flex:1;overflow-y:auto;padding:28px;animation:tab-in 0.3s var(--transition-smooth)}
+.tc.active{display:block}
+@keyframes tab-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ══════════════════════════════════════════════════════
+   WELCOME SCREEN
+   ══════════════════════════════════════════════════════ */
+#welcome{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px}
+.welcome-inner{max-width:580px}
+.welcome-logo{
+  width:90px;height:90px;border-radius:28px;
+  background:linear-gradient(135deg, var(--accent-1), var(--aurora-2), var(--aurora-3));
+  display:flex;align-items:center;justify-content:center;font-size:40px;
+  margin:0 auto 28px;
+  box-shadow:0 0 80px var(--accent-glow), 0 24px 48px rgba(0,0,0,0.4);
+  animation:welcome-float 5s ease-in-out infinite;
+  position:relative;
+}
+.welcome-logo::after{
+  content:'';position:absolute;inset:-4px;border-radius:32px;
+  background:linear-gradient(135deg, var(--accent-1), var(--aurora-2), var(--aurora-3));
+  z-index:-1;opacity:0.3;filter:blur(20px);
+  animation:welcome-float 5s ease-in-out infinite reverse;
+}
+@keyframes welcome-float{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  33%{transform:translateY(-8px) rotate(1deg)}
+  66%{transform:translateY(-4px) rotate(-1deg)}
+}
+#welcome h2{
+  font-family:var(--font-display);font-size:44px;font-weight:800;
+  letter-spacing:-0.03em;margin-bottom:10px;
+  background:linear-gradient(135deg, var(--text-primary), var(--accent-2), var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+#welcome p{
+  color:var(--text-secondary);max-width:420px;
+  line-height:1.7;font-size:14px;margin:0 auto 32px;
+}
+.welcome-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin-bottom:32px;text-align:left;
+}
+.wf{
+  background:var(--glass-1);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-md);
+  padding:14px 16px;font-size:12px;
+  display:flex;align-items:flex-start;gap:10px;
+  color:var(--text-secondary);
+  transition:all var(--transition-spring);
+}
+.wf:hover{
+  border-color:var(--glass-border-2);
+  transform:translateY(-2px);
+  background:var(--glass-2);
+}
+.wf-icon{font-size:20px;flex-shrink:0;line-height:1}
+.wf-text{display:flex;flex-direction:column;gap:2px}
+.wf-text strong{font-size:12px;color:var(--text-primary);font-weight:600}
+.wf-text span{font-size:10px;color:var(--text-tertiary)}
+
+/* ══════════════════════════════════════════════════════
+   SHOT CARDS — ADVANCED DRAG & DROP
+   ══════════════════════════════════════════════════════ */
+.shot-card{
+  background:linear-gradient(145deg, rgba(14,14,34,0.9), rgba(10,10,24,0.95));
+  backdrop-filter:blur(12px);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  padding:16px;padding-left:28px;
+  margin-bottom:10px;
+  transition:all var(--transition-spring);
+  cursor:default;
+  position:relative;overflow:hidden;
+}
+.shot-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(124,92,252,0.15), transparent);
+  opacity:0;transition:opacity var(--transition-base);
+}
+.shot-card:hover{
+  border-color:var(--glass-border-2);
+  transform:translateY(-1px);
+  box-shadow:0 8px 24px rgba(0,0,0,0.3), 0 0 16px rgba(124,92,252,0.04);
+}
+.shot-card:hover::after{opacity:1}
+.shot-card.dragging{opacity:0.4;transform:scale(0.98);border-color:var(--accent-1)!important}
+.shot-card.drag-over{
+  border-color:var(--accent-1);
+  box-shadow:0 0 0 2px rgba(124,92,252,0.15), 0 0 30px rgba(124,92,252,0.1);
+  transform:translateY(-3px);
+}
+.shot-card.drag-over::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg, var(--accent-1), var(--cyan));
+  border-radius:3px 3px 0 0;z-index:5;
+}
+
+.drag-handle{
+  position:absolute;left:8px;top:50%;transform:translateY(-50%);
+  color:var(--text-dim);font-size:12px;cursor:grab;padding:4px;
+  transition:all var(--transition-fast);opacity:0;line-height:1;
+  border-radius:4px;
+}
+.shot-card:hover .drag-handle{opacity:1}
+.drag-handle:hover{color:var(--accent-1);background:var(--glass-1)}
+.drag-handle:active{cursor:grabbing}
+
+.sn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:var(--radius-full);
+  background:linear-gradient(135deg, var(--accent-1), var(--aurora-3));
+  color:#fff;font-size:10px;font-weight:800;flex-shrink:0;
+  box-shadow:0 2px 8px var(--accent-glow);
+  font-family:var(--font-mono);
+}
+.sn.done{background:linear-gradient(135deg, #16a34a, var(--green));box-shadow:0 2px 8px var(--green-glow)}
+
+.shot-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.shot-top input{
+  font-size:13px;font-weight:700;background:transparent;
+  border:1px solid transparent;padding:5px 8px;flex:1;border-radius:var(--radius-sm);
+}
+.shot-top input:hover{border-color:var(--glass-border)}
+.shot-top input:focus{border-color:var(--accent-1);background:rgba(124,92,252,0.04)}
+
+.shot-status{
+  font-size:9px;padding:3px 10px;border-radius:var(--radius-full);
+  font-weight:700;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;
+}
+.status-done{background:var(--green-glow);color:var(--green);border:1px solid rgba(34,197,94,0.2)}
+.status-pending{background:rgba(124,92,252,0.06);color:var(--text-tertiary);border:1px solid var(--glass-border)}
+
+.sf{display:flex;flex-direction:column;gap:8px}
+.sr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.shot-actions{
+  display:flex;gap:4px;margin-top:10px;flex-wrap:wrap;
+  padding-top:10px;border-top:1px solid var(--glass-border);
+  align-items:center;
+}
+.shot-thumb{
+  width:80px;height:48px;border-radius:var(--radius-sm);overflow:hidden;
+  border:1px solid var(--glass-border);flex-shrink:0;
+  cursor:zoom-in;transition:all var(--transition-spring);
+}
+.shot-thumb:hover{transform:scale(1.08);border-color:var(--accent-1);box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+.shot-thumb img{width:100%;height:100%;object-fit:cover}
+
+/* Drag ghost */
+.drag-ghost{
+  position:fixed;pointer-events:none;z-index:9999;
+  opacity:0.95;transform:rotate(-1.5deg) scale(1.03);
+  border-radius:var(--radius-lg);
+  box-shadow:0 24px 64px rgba(0,0,0,0.7), 0 0 40px var(--accent-glow);
+  border:2px solid var(--accent-1);
+  background:linear-gradient(145deg, rgba(14,14,34,0.98), rgba(10,10,24,0.99));
+  padding:12px 16px;font-size:12px;color:var(--text-primary);
+  min-width:200px;max-width:280px;
+  backdrop-filter:blur(20px);
+}
+
+/* ══════════════════════════════════════════════════════
+   REFERENCES — DROP ZONES
+   ══════════════════════════════════════════════════════ */
+.ref-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.ref-grid{grid-template-columns:1fr}}
+
+.ref-zone{
+  border:2px dashed rgba(124,92,252,0.2);
+  border-radius:var(--radius-lg);
+  padding:24px 18px;
+  text-align:center;cursor:pointer;
+  transition:all var(--transition-spring);
+  min-height:120px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  background:var(--glass-1);
+  position:relative;overflow:hidden;
+}
+.ref-zone::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at center, rgba(124,92,252,0.06) 0%, transparent 70%);
+  opacity:0;transition:opacity var(--transition-base);
+}
+.ref-zone:hover,.ref-zone.dragover{
+  border-color:var(--accent-1);
+  background:rgba(124,92,252,0.06);
+  transform:scale(1.01);
+  box-shadow:0 0 30px rgba(124,92,252,0.1);
+}
+.ref-zone:hover::before,.ref-zone.dragover::before{opacity:1}
+.ref-zone .rz-icon{font-size:30px;transition:transform var(--transition-spring)}
+.ref-zone:hover .rz-icon{transform:scale(1.15) rotate(-3deg)}
+.ref-zone strong{font-size:13px;color:var(--text-primary)}
+.ref-zone p{font-size:11px;color:var(--text-tertiary)}
+
+.ref-gallery{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ref-thumb{
+  width:60px;height:60px;border-radius:var(--radius-sm);overflow:hidden;
+  position:relative;border:1px solid var(--glass-border);cursor:pointer;
+  flex-shrink:0;transition:all var(--transition-spring);
+}
+.ref-thumb:hover{transform:scale(1.1);border-color:var(--accent-1);z-index:2;box-shadow:0 8px 20px rgba(0,0,0,0.4)}
+.ref-thumb img{width:100%;height:100%;object-fit:cover}
+.ref-thumb .rm{
+  position:absolute;top:2px;right:2px;background:var(--red);color:#fff;
+  border:none;width:18px;height:18px;border-radius:50%;font-size:9px;
+  display:none;align-items:center;justify-content:center;cursor:pointer;
+  padding:0;box-shadow:0 2px 6px rgba(0,0,0,0.4);
+}
+.ref-thumb:hover .rm{display:flex}
+
+/* ══════════════════════════════════════════════════════
+   CHARACTERS & LOCATIONS
+   ══════════════════════════════════════════════════════ */
+.entity-card{
+  background:linear-gradient(145deg, rgba(14,14,34,0.85), rgba(10,10,24,0.9));
+  backdrop-filter:blur(12px);
+  border:1px solid var(--glass-border);border-radius:var(--radius-md);
+  padding:14px;margin-bottom:8px;
+  display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;
+  transition:all var(--transition-base);
+}
+.entity-card:hover{border-color:var(--glass-border-2)}
+.entity-card input,.entity-card textarea{
+  background:rgba(124,92,252,0.03);font-size:12px;padding:8px 10px;
+}
+.entity-card textarea{min-height:44px}
+
+.anchor-badge{
+  font-size:9px;padding:3px 10px;border-radius:var(--radius-full);
+  background:var(--green-glow);color:var(--green);
+  border:1px solid rgba(34,197,94,0.2);white-space:nowrap;
+  display:flex;align-items:center;gap:4px;font-weight:700;
+}
+.no-anchor{background:rgba(124,92,252,0.06);color:var(--text-dim);border-color:var(--glass-border)}
+
+/* ══════════════════════════════════════════════════════
+   GENERATE WIZARD
+   ══════════════════════════════════════════════════════ */
+.wiz{max-width:860px;margin:0 auto}
+.wiz-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;gap:12px;
+}
+.wiz-title{
+  font-family:var(--font-display);font-size:22px;font-weight:700;
+  letter-spacing:-0.02em;text-align:center;flex:1;
+  background:linear-gradient(135deg, var(--text-primary), var(--accent-2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.wiz-dots{display:flex;gap:5px;justify-content:center;margin:12px 0;flex-wrap:wrap;padding:0 40px}
+.wiz-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--glass-border-2);
+  cursor:pointer;border:none;padding:0;
+  transition:all var(--transition-spring);
+}
+.wiz-dot:hover{transform:scale(1.5);background:var(--text-tertiary)}
+.wiz-dot.done{background:var(--green);box-shadow:0 0 6px var(--green)}
+.wiz-dot.done:hover{background:#34d461}
+.wiz-dot.cur{
+  background:var(--accent-1);width:26px;border-radius:5px;
+  box-shadow:0 0 12px var(--accent-1);
+}
+
+.wiz-progress{
+  text-align:center;font-size:11px;font-family:var(--font-mono);
+  color:var(--text-tertiary);margin-bottom:18px;
+}
+.progress-bar-outer{
+  height:4px;background:var(--glass-border);
+  border-radius:var(--radius-full);margin-bottom:22px;overflow:hidden;
+}
+.progress-bar-fill{
+  height:100%;border-radius:var(--radius-full);
+  background:linear-gradient(90deg, var(--accent-1), var(--cyan), var(--aurora-3));
+  transition:width 0.6s var(--transition-smooth);
+  position:relative;
+}
+.progress-bar-fill::after{
+  content:'';position:absolute;right:0;top:-2px;bottom:-2px;width:20px;
+  background:radial-gradient(circle, rgba(255,255,255,0.4), transparent);
+  border-radius:50%;filter:blur(2px);
+}
+
+.step-box{
+  background:linear-gradient(145deg, rgba(14,14,34,0.88), rgba(10,10,24,0.94));
+  backdrop-filter:blur(16px);
+  border:1px solid var(--glass-border);border-radius:var(--radius-lg);
+  padding:20px;margin-bottom:16px;
+  animation:step-in 0.35s var(--transition-smooth);
+}
+@keyframes step-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.step-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.step-num{
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg, var(--accent-1), var(--aurora-3));
+  color:#fff;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 8px var(--accent-glow);
+  font-family:var(--font-mono);
+}
+.step-header h4{font-size:14px;font-weight:700}
+
+/* Checklist */
+.checklist{display:flex;flex-direction:column;gap:8px}
+.check-item{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;
+  background:rgba(124,92,252,0.03);
+  border:1px solid var(--glass-border);border-radius:var(--radius-md);
+  transition:all var(--transition-spring);
+  animation:check-in 0.3s var(--transition-smooth) both;
+}
+.check-item:nth-child(1){animation-delay:0.05s}
+.check-item:nth-child(2){animation-delay:0.1s}
+.check-item:nth-child(3){animation-delay:0.15s}
+.check-item:nth-child(4){animation-delay:0.2s}
+.check-item:nth-child(5){animation-delay:0.25s}
+@keyframes check-in{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+.check-item:hover{border-color:var(--glass-border-2);transform:translateX(4px)}
+
+.check-num{
+  width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg, rgba(124,92,252,0.15), rgba(6,182,212,0.1));
+  color:var(--accent-2);font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  border:1px solid rgba(124,92,252,0.2);
+  font-family:var(--font-mono);
+}
+.check-thumb{
+  width:52px;height:40px;border-radius:var(--radius-sm);overflow:hidden;
+  flex-shrink:0;border:1px solid var(--glass-border);
+  background:var(--glass-1);display:flex;align-items:center;justify-content:center;
+}
+.check-thumb img{width:100%;height:100%;object-fit:cover;cursor:pointer;transition:transform var(--transition-fast)}
+.check-thumb:hover img{transform:scale(1.08)}
+
+.check-info{flex:1;min-width:0}
+.check-info .label{font-size:12px;font-weight:600;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.check-info .reason{font-size:10px;color:var(--text-tertiary);line-height:1.4}
+
+.check-type{
+  font-size:8px;padding:3px 8px;border-radius:var(--radius-full);
+  font-weight:800;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;
+}
+.type-style{background:rgba(168,85,247,0.12);color:#c084fc;border:1px solid rgba(168,85,247,0.2)}
+.type-char{background:rgba(6,182,212,0.08);color:var(--cyan);border:1px solid rgba(6,182,212,0.2)}
+.type-loc{background:rgba(245,158,11,0.08);color:var(--amber);border:1px solid rgba(245,158,11,0.2)}
+.type-prev{background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.2)}
+.type-anchor{background:var(--green-glow);color:var(--green);border:1px solid rgba(34,197,94,0.2)}
+
+/* Prompt box */
+.prompt-box{
+  background:rgba(124,92,252,0.02);border:1px solid var(--glass-border);
+  border-radius:var(--radius-md);padding:16px;
+  font-family:var(--font-mono);font-size:11px;line-height:1.8;
+  max-height:300px;overflow-y:auto;
+  white-space:pre-wrap;word-break:break-word;
+  color:var(--text-secondary);
+}
+.prompt-box .pm-section{color:var(--accent-2);font-weight:700}
+.prompt-box .pm-rule{color:var(--cyan)}
+
+/* Drop zone */
+.drop-zone{
+  border:2px dashed rgba(124,92,252,0.2);
+  border-radius:var(--radius-lg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:220px;
+  transition:all var(--transition-spring);
+  cursor:pointer;position:relative;overflow:hidden;
+  background:var(--glass-1);
+}
+.drop-zone::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%, rgba(124,92,252,0.04) 0%, transparent 70%);
+  opacity:0;transition:opacity var(--transition-base);
+}
+.drop-zone:hover::before,.drop-zone.dragover::before{opacity:1}
+.drop-zone:hover,.drop-zone.dragover{
+  border-color:var(--accent-1);
+  background:rgba(124,92,252,0.04);
+  box-shadow:0 0 40px rgba(124,92,252,0.08);
+}
+.drop-zone.dragover{
+  border-style:solid;
+  animation:dz-pulse 0.5s ease-in-out infinite alternate;
+}
+@keyframes dz-pulse{
+  from{box-shadow:0 0 20px rgba(124,92,252,0.1)}
+  to{box-shadow:0 0 50px rgba(124,92,252,0.25)}
+}
+.drop-zone.has-img{
+  border-style:solid;border-color:var(--green);
+  cursor:zoom-in;box-shadow:0 0 20px rgba(34,197,94,0.08);
+}
+.drop-zone img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0}
+.dz-text{text-align:center;color:var(--text-tertiary);font-size:12px;z-index:1;padding:24px}
+.dz-icon{font-size:40px;margin-bottom:10px;animation:dz-float 3s ease-in-out infinite}
+@keyframes dz-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* Anchor buttons */
+.anchor-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.anchor-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:var(--radius-md);
+  font-size:11px;font-weight:700;
+  background:var(--glass-1);border:1px solid var(--glass-border);
+  cursor:pointer;transition:all var(--transition-spring);
+  color:var(--text-secondary);
+}
+.anchor-btn:hover{
+  border-color:var(--accent-1);
+  background:rgba(124,92,252,0.08);
+  color:var(--text-primary);transform:scale(1.03);
+}
+.anchor-btn.set{
+  background:var(--green-glow);border-color:rgba(34,197,94,0.25);
+  color:var(--green);box-shadow:0 0 12px rgba(34,197,94,0.08);
+}
+
+/* ══════════════════════════════════════════════════════
+   BOARD VIEW
+   ══════════════════════════════════════════════════════ */
+.board-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+  gap:16px;
+}
+.board-card{
+  background:linear-gradient(145deg, rgba(14,14,34,0.9), rgba(10,10,24,0.95));
+  backdrop-filter:blur(12px);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;cursor:pointer;
+  transition:all var(--transition-spring);
+  position:relative;
+}
+.board-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.7));
+  z-index:1;opacity:0;transition:opacity var(--transition-base);
+  pointer-events:none;
+}
+.board-card:hover{
+  border-color:var(--accent-1);
+  transform:translateY(-4px) scale(1.01);
+  box-shadow:0 16px 40px rgba(0,0,0,0.4), 0 0 30px rgba(124,92,252,0.08);
+}
+.board-card:hover::before{opacity:1}
+.board-img{width:100%;aspect-ratio:16/9;object-fit:cover;border-bottom:1px solid var(--glass-border)}
+.board-info{padding:12px 14px}
+.board-info h4{font-size:12px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.board-info p{
+  font-size:10px;color:var(--text-tertiary);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.board-num{
+  font-family:var(--font-mono);font-size:9px;
+  padding:2px 6px;border-radius:var(--radius-full);
+  background:linear-gradient(135deg, rgba(124,92,252,0.2), rgba(6,182,212,0.1));
+  color:var(--accent-2);border:1px solid rgba(124,92,252,0.15);
+}
+
+/* ══════════════════════════════════════════════════════
+   LIGHTBOX
+   ══════════════════════════════════════════════════════ */
+#lightbox{
+  position:fixed;inset:0;background:rgba(0,0,0,0.95);
+  z-index:2000;display:none;align-items:center;justify-content:center;
+  cursor:zoom-out;
+  backdrop-filter:blur(8px);
+  animation:lb-in 0.2s ease;
+}
+@keyframes lb-in{from{opacity:0}to{opacity:1}}
+#lightbox.show{display:flex}
+#lightbox img{
+  max-width:92vw;max-height:92vh;border-radius:var(--radius-md);
+  box-shadow:0 0 80px var(--accent-glow), 0 40px 80px rgba(0,0,0,0.7);
+  animation:lb-img-in 0.3s var(--transition-smooth);
+}
+@keyframes lb-img-in{
+  from{transform:scale(0.9) translateY(20px);opacity:0}
+  to{transform:none;opacity:1}
+}
+
+/* ══════════════════════════════════════════════════════
+   TOASTS
+   ══════════════════════════════════════════════════════ */
+#toast-box{
+  position:fixed;top:16px;right:16px;z-index:3000;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+}
+.toast{
+  padding:12px 18px;border-radius:var(--radius-md);
+  font-size:12px;font-weight:500;
+  pointer-events:auto;max-width:380px;
+  box-shadow:var(--shadow-lg);
+  animation:toast-in 0.35s var(--transition-spring);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;gap:8px;
+}
+@keyframes toast-in{from{transform:translateX(40px) scale(0.9);opacity:0}to{transform:none;opacity:1}}
+.toast-out{animation:toast-out 0.3s ease forwards}
+@keyframes toast-out{to{transform:translateX(40px);opacity:0}}
+
+.toast-info{background:rgba(14,14,34,0.95);border:1px solid var(--glass-border-2);color:var(--text-primary)}
+.toast-success{background:rgba(10,28,16,0.95);border:1px solid rgba(34,197,94,0.3);color:var(--green)}
+.toast-error{background:rgba(28,8,8,0.95);border:1px solid rgba(239,68,68,0.3);color:var(--red)}
+.toast-warning{background:rgba(28,20,4,0.95);border:1px solid rgba(245,158,11,0.3);color:var(--amber)}
+
+/* ══════════════════════════════════════════════════════
+   MODAL
+   ══════════════════════════════════════════════════════ */
+.mo{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);
+  z-index:1000;display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+}
+.mo.show{display:flex}
+.modal{
+  background:linear-gradient(145deg, rgba(14,14,34,0.98), rgba(10,10,24,0.99));
+  backdrop-filter:blur(24px);
+  border:1px solid var(--glass-border-2);border-radius:var(--radius-xl);
+  padding:28px;max-width:500px;width:92%;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:0 0 80px var(--accent-glow-soft), var(--shadow-xl);
+  animation:modal-in 0.35s var(--transition-spring);
+}
+@keyframes modal-in{from{transform:translateY(30px) scale(0.95);opacity:0}to{transform:none;opacity:1}}
+.modal h2{
+  font-family:var(--font-display);font-size:26px;font-weight:700;
+  letter-spacing:-0.02em;margin-bottom:18px;
+  background:linear-gradient(135deg, var(--accent-2), var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.field{margin-bottom:16px}
+
+/* ══════════════════════════════════════════════════════
+   UTILITIES
+   ══════════════════════════════════════════════════════ */
+.empty{text-align:center;padding:48px 24px;color:var(--text-tertiary)}
+.empty .ic{font-size:48px;margin-bottom:14px;opacity:0.4}
+.flex{display:flex}.gap-2{gap:8px}.gap-3{gap:12px}.items-center{align-items:center}
+.justify-between{justify-content:space-between}.flex-1{flex:1}.flex-wrap{flex-wrap:wrap}
+.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}
+.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}
+.text-muted{color:var(--text-secondary)}.text-dim{color:var(--text-tertiary)}
+.text-sm{font-size:12px}.text-xs{font-size:11px}
+.divider{height:1px;background:var(--glass-border);margin:16px 0}
+
+.badge{
+  font-size:9px;padding:3px 8px;border-radius:var(--radius-full);
+  font-weight:700;text-transform:uppercase;letter-spacing:0.05em;
+  background:rgba(124,92,252,0.1);color:var(--accent-1);
+  border:1px solid rgba(124,92,252,0.2);
+}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat-cell{
+  background:var(--glass-1);border:1px solid var(--glass-border);
+  border-radius:var(--radius-md);padding:12px 14px;text-align:center;
+  transition:all var(--transition-spring);
+}
+.stat-cell:hover{border-color:var(--glass-border-2);transform:translateY(-2px)}
+.stat-num{
+  font-family:var(--font-display);font-size:24px;font-weight:700;
+  line-height:1;
+  background:linear-gradient(135deg, var(--accent-2), var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.stat-lbl{
+  font-size:10px;color:var(--text-dim);margin-top:3px;
+  font-weight:600;letter-spacing:0.05em;text-transform:uppercase;
+}
+
+.section-title{
+  font-family:var(--font-display);font-size:16px;font-weight:700;
+  letter-spacing:-0.01em;
+  color:var(--accent-2);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-title::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg, var(--glass-border), transparent);
+}
+
+/* Auto-save */
+.autosave{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-dim);font-family:var(--font-mono)}
+.autosave-dot{width:5px;height:5px;border-radius:50%;background:var(--green);opacity:0;transition:0.3s}
+.autosave-dot.saving{opacity:1;animation:pulse-dot 1s infinite}
+.autosave-dot.saved{opacity:0.6;animation:none}
+
+/* Storage indicator */
+.storage-info{
+  font-size:10px;color:var(--text-dim);font-family:var(--font-mono);
+  padding:6px 10px;background:var(--glass-1);border:1px solid var(--glass-border);
+  border-radius:var(--radius-sm);text-align:center;
+}
+
+/* Tooltip */
+[data-tip]{position:relative}
+[data-tip]:hover::after{
+  content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);
+  left:50%;transform:translateX(-50%);
+  background:rgba(10,10,24,0.95);border:1px solid var(--glass-border-2);
+  color:var(--text-primary);
+  font-size:10px;padding:5px 10px;border-radius:var(--radius-sm);white-space:nowrap;
+  pointer-events:none;z-index:100;
+  box-shadow:var(--shadow-md);backdrop-filter:blur(12px);
+}
+
+/* Shimmer */
+.shimmer{
+  background:linear-gradient(90deg, rgba(124,92,252,0.03) 25%, rgba(124,92,252,0.08) 50%, rgba(124,92,252,0.03) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.5s infinite;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* File tree */
+.file-tree{font-size:11px;font-family:var(--font-mono);color:var(--text-secondary)}
+.file-tree-item{
+  padding:4px 8px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;gap:6px;
+  cursor:pointer;transition:all var(--transition-fast);
+}
+.file-tree-item:hover{background:var(--glass-1);color:var(--text-primary)}
+.file-tree-folder{color:var(--amber)}
+.file-tree-file{color:var(--text-tertiary)}
+
+/* Print */
+@media print{
+  #sidebar,.topbar,.tabs,.shot-actions,.btn-primary,.btn-ghost,.btn-secondary,.btn-glass,
+  .ref-zone,.info-box,.warn-box,.anchor-btns,.step-box,#fx-canvas,.aurora-bg,
+  .wiz-nav,.wiz-dots,.progress-bar-outer,.wiz-progress{display:none!important}
+  body{background:#fff;color:#000}
+  .tc{display:block!important;overflow:visible!important}
+  .board-card{break-inside:avoid;page-break-inside:avoid}
+}
+
+/* ══════════════════════════════════════════════════════
+   CONTEXT MENU
+   ══════════════════════════════════════════════════════ */
+.ctx-menu{
+  position:fixed;z-index:1500;
+  background:rgba(14,14,34,0.95);
+  backdrop-filter:blur(24px);
+  border:1px solid var(--glass-border-2);
+  border-radius:var(--radius-md);
+  padding:6px;min-width:180px;
+  box-shadow:var(--shadow-xl);
+  animation:ctx-in 0.15s ease;
+}
+@keyframes ctx-in{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:none}}
+.ctx-item{
+  padding:8px 12px;border-radius:var(--radius-sm);
+  font-size:12px;cursor:pointer;
+  display:flex;align-items:center;gap:8px;
+  color:var(--text-secondary);
+  transition:all var(--transition-fast);
+}
+.ctx-item:hover{background:var(--glass-2);color:var(--text-primary)}
+.ctx-sep{height:1px;background:var(--glass-border);margin:4px 6px}
+
+/* ══════════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS OVERLAY
+   ══════════════════════════════════════════════════════ */
+.shortcuts-panel{
+  position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+  z-index:500;
+  background:rgba(14,14,34,0.9);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  padding:10px 16px;
+  display:flex;gap:16px;
+  font-size:11px;color:var(--text-tertiary);
+  box-shadow:var(--shadow-lg);
+  opacity:0;transition:opacity var(--transition-base);
+  pointer-events:none;
+}
+.shortcuts-panel.visible{opacity:1;pointer-events:auto}
+.shortcut{display:flex;align-items:center;gap:4px}
+.shortcut kbd{
+  padding:2px 6px;border-radius:4px;
+  background:var(--glass-2);border:1px solid var(--glass-border-2);
+  font-family:var(--font-mono);font-size:10px;
+  color:var(--text-secondary);
+}
+
+/* Notification badge on tabs */
+.tab-notify{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--pink);box-shadow:0 0 6px var(--pink);
+  display:inline-block;margin-left:4px;
+  animation:pulse-dot 2s ease-in-out infinite;
+}
+</style>
+</head>
+<body>
+<div class="aurora-bg"></div>
+<canvas id="fx-canvas"></canvas>
+<div id="toast-box"></div>
+<div id="lightbox" onclick="this.classList.remove('show')"><img id="lb-img"></div>
+
+<!-- CONTEXT MENU (dynamic) -->
+<div class="ctx-menu" id="ctx-menu" style="display:none"></div>
+
+<!-- NEW PROJECT MODAL -->
+<div class="mo" id="mo-new">
+  <div class="modal">
+    <h2>✨ New Project</h2>
+    <div class="field">
+      <label>Project Title</label>
+      <input id="inp-title" placeholder="My Epic Video Storyboard" autofocus>
+    </div>
+    <div class="field">
+      <label>Style Preset</label>
+      <select id="inp-preset">
+        <option value="">Custom (define later)</option>
+        <option value="anime">Anime / Manga</option>
+        <option value="cinematic">Cinematic Realism</option>
+        <option value="pixar">Pixar / 3D Animation</option>
+        <option value="comic">Comic Book / Graphic Novel</option>
+        <option value="watercolor">Watercolor Illustration</option>
+        <option value="noir">Film Noir</option>
+        <option value="pixel">Pixel Art</option>
+        <option value="sketch">Pencil Sketch</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Custom Style Notes (optional)</label>
+      <textarea id="inp-qstyle" rows="3" placeholder="Add any custom style directions..."></textarea>
+    </div>
+    <div class="flex gap-2 mt-3">
+      <button class="btn-primary" onclick="createProj()">🎬 Create Project</button>
+      <button class="btn-ghost" onclick="closeMo('mo-new')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="mo" id="mo-export">
+  <div class="modal">
+    <h2>📦 Export Project</h2>
+    <p class="text-sm text-muted mb-3">Download the full project including all data and images as a JSON file.</p>
+    <div class="flex gap-2">
+      <button class="btn-primary" onclick="exportProject()">⬇ Export JSON</button>
+      <button class="btn-ghost" onclick="closeMo('mo-export')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="mo" id="mo-import">
+  <div class="modal">
+    <h2>📥 Import Project</h2>
+    <p class="text-sm text-muted mb-3">Import a previously exported project JSON file.</p>
+    <div class="field">
+      <input type="file" id="import-file" accept=".json">
+    </div>
+    <div class="flex gap-2">
+      <button class="btn-primary" onclick="importProject()">📥 Import</button>
+      <button class="btn-ghost" onclick="closeMo('mo-import')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="s-head">
+    <div class="s-logo">
+      <div class="s-logo-icon">🎬</div>
+      <h1>STORYBOARD</h1>
+    </div>
+    <div class="s-sub">AI Studio · Nexus Engine</div>
+  </div>
+  <div id="plist"></div>
+  <div class="s-foot">
+    <button class="btn-primary" style="width:100%" onclick="openMo('mo-new')">+ New Project</button>
+    <div class="flex gap-2">
+      <button class="btn-ghost btn-sm flex-1" onclick="openMo('mo-import')">📥 Import</button>
+      <button class="btn-ghost btn-sm flex-1" onclick="openMo('mo-export')">📦 Export</button>
+    </div>
+    <div class="storage-info" id="storage-info">Loading storage info...</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- WELCOME -->
+  <div id="welcome">
+    <div class="welcome-inner">
+      <div class="welcome-logo">🎬</div>
+      <h2>Storyboard AI Studio</h2>
+      <p>Transform scripts into cinematic storyboards with an intelligent continuity engine. Every frame stays consistent across characters, locations, and style.</p>
+      <div class="welcome-grid">
+        <div class="wf">
+          <div class="wf-icon">🔗</div>
+          <div class="wf-text"><strong>Continuity Engine</strong><span>Auto-reference chaining</span></div>
+        </div>
+        <div class="wf">
+          <div class="wf-icon">⚡</div>
+          <div class="wf-text"><strong>Gemini Powered</strong><span>Smart prompt building</span></div>
+        </div>
+        <div class="wf">
+          <div class="wf-icon">⭐</div>
+          <div class="wf-text"><strong>Anchor System</strong><span>Lock character looks</span></div>
+        </div>
+        <div class="wf">
+          <div class="wf-icon">🎨</div>
+          <div class="wf-text"><strong>Style Bible</strong><span>Global visual rules</span></div>
+        </div>
+        <div class="wf">
+          <div class="wf-icon">📁</div>
+          <div class="wf-text"><strong>Persistent Storage</strong><span>IndexedDB + auto-save</span></div>
+        </div>
+        <div class="wf">
+          <div class="wf-icon">🎞</div>
+          <div class="wf-text"><strong>Scene Parsing</strong><span>Auto shot breakdown</span></div>
+        </div>
+      </div>
+      <button class="btn-primary btn-lg" onclick="openMo('mo-new')">🎬 Start Your First Project</button>
+    </div>
+  </div>
+
+  <!-- WORKSPACE -->
+  <div id="workspace" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div class="topbar">
+      <h2 id="ptitle">Project</h2>
+      <div class="topbar-actions">
+        <div class="autosave" id="autosave">
+          <div class="autosave-dot" id="autosave-dot"></div>
+          <span id="autosave-txt">saved</span>
+        </div>
+        <div class="progress-pill" id="prog-pill">
+          <div class="progress-dot"></div>
+          <span id="prog-txt">0/0</span>
+        </div>
+        <button class="btn-ghost btn-sm btn-icon" onclick="openMo('mo-export')" data-tip="Export project">📦</button>
+        <button class="btn-ghost btn-sm btn-icon" onclick="window.print()" data-tip="Print storyboard">🖨</button>
+        <button class="btn-danger btn-sm btn-icon" onclick="delCurProj()" data-tip="Delete project">🗑</button>
+      </div>
+    </div>
+
+    <div class="tabs" id="main-tabs">
+      <div class="tab active" data-tab="script" onclick="stab('script')">📝 Script</div>
+      <div class="tab" data-tab="refs" onclick="stab('refs')">🖼 References</div>
+      <div class="tab" data-tab="shots" onclick="stab('shots')">🎬 Shots <span class="tab-badge" id="shots-badge">0</span></div>
+      <div class="tab" data-tab="generate" onclick="stab('generate')">⚡ Generate</div>
+      <div class="tab" data-tab="board" onclick="stab('board')">🖼 Board</div>
+    </div>
+
+    <!-- TAB: SCRIPT -->
+    <div class="tc active" id="tab-script">
+      <div id="stats-row" class="stat-row"></div>
+
+      <div class="card card-accent">
+        <h3>📝 Video Script</h3>
+        <textarea id="ta-script" rows="12" placeholder="Paste your full video script here. Be as detailed as possible — include dialogue, action descriptions, scene transitions, and visual cues. The more detail, the better the shot breakdown."></textarea>
+        <div class="flex gap-2 mt-3 items-center flex-wrap">
+          <button class="btn-primary" onclick="saveScript()">💾 Save Script</button>
+          <span class="text-xs text-dim">Script is the source for auto-parsing shots via Gemini</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🎨 Style Bible</h3>
+        <p class="text-xs text-dim mb-2">Applied globally to every generated image. Be precise — this is your visual constitution.</p>
+        <textarea id="ta-style" rows="5" placeholder="Describe your visual style in detail. E.g.: Illustrated anime style with dot eyes for all characters. Soft cel-shading with teal-and-amber palette. Cinematic 16:9 compositions. Atmospheric volumetric lighting..."></textarea>
+        <button class="btn-glass btn-sm mt-2" onclick="saveStyle()">💾 Save Style Bible</button>
+      </div>
+
+      <div class="card">
+        <h3>👤 Characters</h3>
+        <p class="text-xs text-dim mb-2">Define characters here. They auto-populate after parsing. Set anchor shots in the Generate tab for max consistency.</p>
+        <div id="char-list"></div>
+        <button class="btn-ghost btn-sm mt-2" onclick="addChar()">+ Add Character</button>
+      </div>
+
+      <div class="card">
+        <h3>📍 Locations</h3>
+        <p class="text-xs text-dim mb-2">Recurring locations for environment consistency. Set anchor shots for best results.</p>
+        <div id="loc-list"></div>
+        <button class="btn-ghost btn-sm mt-2" onclick="addLoc()">+ Add Location</button>
+      </div>
+    </div>
+
+    <!-- TAB: REFS -->
+    <div class="tc" id="tab-refs">
+      <div class="section-title">🖼 Reference Images</div>
+      <div class="info-box">
+        <strong>Upload visual references</strong> — drag files directly onto each zone or click to browse.
+        These appear in your upload checklist when generating each frame, ensuring consistent style and character design.
+      </div>
+      <div class="ref-grid">
+        <div>
+          <div class="ref-zone" data-type="style"
+            ondrop="rDrop(event)" ondragover="rOver(event)" ondragleave="rLeave(event)" onclick="pickRef('style')">
+            <div class="rz-icon">🎨</div>
+            <strong>Art Style</strong>
+            <p>Color palette, rendering style, mood</p>
+          </div>
+          <div class="ref-gallery" id="refs-style"></div>
+        </div>
+        <div>
+          <div class="ref-zone" data-type="character"
+            ondrop="rDrop(event)" ondragover="rOver(event)" ondragleave="rLeave(event)" onclick="pickRef('character')">
+            <div class="rz-icon">👤</div>
+            <strong>Characters</strong>
+            <p>Character designs, poses, expressions</p>
+          </div>
+          <div class="ref-gallery" id="refs-character"></div>
+        </div>
+        <div>
+          <div class="ref-zone" data-type="environment"
+            ondrop="rDrop(event)" ondragover="rOver(event)" ondragleave="rLeave(event)" onclick="pickRef('environment')">
+            <div class="rz-icon">🏔</div>
+            <strong>Environments</strong>
+            <p>Locations, architecture, scenery</p>
+          </div>
+          <div class="ref-gallery" id="refs-environment"></div>
+        </div>
+      </div>
+      <input type="file" id="ref-input" accept="image/*" multiple style="display:none" onchange="refPicked(event)">
+    </div>
+
+    <!-- TAB: SHOTS -->
+    <div class="tc" id="tab-shots">
+      <div class="info-box">
+        <strong>Step 1:</strong> Click <strong>"📋 Copy Parse Prompt"</strong> → paste into <a href="https://gemini.google.com" target="_blank">gemini.google.com</a><br>
+        <strong>Step 2:</strong> Copy Gemini's JSON response → paste below → click <strong>"Parse Shots"</strong>.<br>
+        Characters &amp; locations auto-populate in the Script tab. <strong>Drag shots to reorder.</strong>
+      </div>
+      <div class="card card-accent">
+        <h3>🔮 Parse Script with Gemini</h3>
+        <div class="flex gap-2 mb-3 flex-wrap">
+          <button class="btn-primary" onclick="copyParsePrompt()">📋 Copy Parse Prompt</button>
+          <button class="btn-ghost btn-sm" onclick="addShot()">+ Manual Shot</button>
+        </div>
+        <label>Paste Gemini's JSON Response</label>
+        <textarea id="ta-parse" rows="6" placeholder='[{"index":1,"title":"Opening shot","description":"...","camera":"Wide","mood":"Tense","characters":["Hero"],"location":"City rooftop","continuityNotes":"..."}]'></textarea>
+        <button class="btn-success mt-2" onclick="parseResponse()">✅ Parse into Shots</button>
+      </div>
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-sm text-muted" id="shot-count"></span>
+        <div class="flex gap-2">
+          <button class="btn-ghost btn-xs" onclick="renderShots()">↻ Refresh</button>
+          <button class="btn-ghost btn-xs" onclick="clearAllShots()">🗑 Clear All</button>
+        </div>
+      </div>
+      <div id="shots-list" class="shots-container"></div>
+    </div>
+
+    <!-- TAB: GENERATE -->
+    <div class="tc" id="tab-generate">
+      <div id="wiz-area"></div>
+    </div>
+
+    <!-- TAB: BOARD -->
+    <div class="tc" id="tab-board">
+      <div class="flex gap-2 mb-4 justify-between items-center flex-wrap">
+        <div class="section-title" style="margin-bottom:0">🖼 Complete Storyboard</div>
+        <div class="flex gap-2">
+          <button class="btn-ghost btn-sm" onclick="window.print()">🖨 Print</button>
+          <button class="btn-amber btn-sm" onclick="dlAll()">⬇ Download All</button>
+        </div>
+      </div>
+      <div class="board-grid" id="board-grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// PARTICLE + AURORA CANVAS SYSTEM
+// ═══════════════════════════════════════════════════════════
+(function(){
+  const c = document.getElementById('fx-canvas');
+  const ctx = c.getContext('2d');
+  let W, H, particles = [], auroraTime = 0;
+
+  function resize(){
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function mkParticle(){
+    return {
+      x: Math.random() * W,
+      y: H + 10 + Math.random() * 40,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: -(Math.random() * 0.8 + 0.3),
+      r: Math.random() * 2 + 0.3,
+      life: 1,
+      decay: Math.random() * 0.003 + 0.001,
+      hue: [260, 180, 280, 320, 160][Math.floor(Math.random() * 5)]
+    };
+  }
+
+  // Initialize
+  for(let i = 0; i < 40; i++){
+    const p = mkParticle();
+    p.y = Math.random() * H;
+    particles.push(p);
+  }
+
+  function drawAurora(){
+    auroraTime += 0.003;
+    ctx.save();
+    ctx.globalAlpha = 0.03;
+
+    for(let i = 0; i < 3; i++){
+      const gradient = ctx.createLinearGradient(0, 0, W, H * 0.4);
+      const offset = Math.sin(auroraTime + i * 2) * 0.2 + 0.5;
+      gradient.addColorStop(0, 'transparent');
+      gradient.addColorStop(Math.max(0, offset - 0.2), 'transparent');
+      gradient.addColorStop(offset, `hsla(${260 + i * 40 + Math.sin(auroraTime) * 20}, 80%, 60%, 0.15)`);
+      gradient.addColorStop(Math.min(1, offset + 0.2), 'transparent');
+      gradient.addColorStop(1, 'transparent');
+
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      const waveY = H * 0.15 + Math.sin(auroraTime * 0.7 + i) * H * 0.05;
+      ctx.moveTo(0, 0);
+      for(let x = 0; x <= W; x += 20){
+        const y = waveY + Math.sin(x * 0.003 + auroraTime + i * 1.5) * 30
+                       + Math.sin(x * 0.007 + auroraTime * 0.5) * 15;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W, 0);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+
+    drawAurora();
+
+    if(Math.random() < 0.12) particles.push(mkParticle());
+
+    particles = particles.filter(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= p.decay;
+      p.vy *= 0.999;
+      if(p.life <= 0) return false;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2.5);
+      g.addColorStop(0, `hsla(${p.hue}, 80%, 70%, ${p.life * 0.6})`);
+      g.addColorStop(1, `hsla(${p.hue}, 80%, 50%, 0)`);
+      ctx.fillStyle = g;
+      ctx.fill();
+      return true;
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ═══════════════════════════════════════════════════════════
+// RIPPLE EFFECT ON BUTTONS
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  const r = document.createElement('span');
+  r.className = 'ripple';
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX - rect.left - size/2}px;top:${e.clientY - rect.top - size/2}px`;
+  btn.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+});
+
+// ═══════════════════════════════════════════════════════════
+// CORE UTILITIES
+// ═══════════════════════════════════════════════════════════
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+const esc = s => { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; };
+const readF = f => new Promise((res, rej) => {
+  const x = new FileReader();
+  x.onload = () => res(x.result);
+  x.onerror = rej;
+  x.readAsDataURL(f);
+});
+
+function toast(msg, type = 'info', icon = ''){
+  const e = document.createElement('div');
+  e.className = `toast toast-${type}`;
+  const ic = icon || (type === 'success' ? '✓' : type === 'error' ? '✕' : type === 'warning' ? '⚠' : 'ℹ');
+  e.innerHTML = `<span>${ic}</span><span>${msg}</span>`;
+  document.getElementById('toast-box').appendChild(e);
+  setTimeout(() => {
+    e.classList.add('toast-out');
+    setTimeout(() => e.remove(), 300);
+  }, 3500);
+}
+
+function openMo(id){ document.getElementById(id).classList.add('show') }
+function closeMo(id){ document.getElementById(id).classList.remove('show') }
+function showLB(src){ document.getElementById('lb-img').src = src; document.getElementById('lightbox').classList.add('show') }
+
+function stab(n){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === n));
+  document.querySelectorAll('.tc').forEach(t => t.classList.toggle('active', t.id === 'tab-' + n));
+  if(n === 'generate') renderWiz();
+  if(n === 'board') renderBoard();
+  if(n === 'shots') renderShots();
+  if(n === 'script') renderStats();
+}
+
+function dlDataUrl(d, name){
+  const a = document.createElement('a');
+  a.href = d; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function copyTxt(txt, btn){
+  navigator.clipboard.writeText(txt);
+  if(btn){
+    const o = btn.innerHTML;
+    btn.classList.add('btn-copied');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.classList.remove('btn-copied'); btn.innerHTML = o }, 1800);
+  }
+}
+
+let autoSaveTimer = null;
+function triggerAutoSave(){
+  const dot = document.getElementById('autosave-dot');
+  const txt = document.getElementById('autosave-txt');
+  if(dot && txt){ dot.className = 'autosave-dot saving'; txt.textContent = 'saving…' }
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer = setTimeout(() => {
+    if(dot && txt){ dot.className = 'autosave-dot saved'; txt.textContent = 'saved' }
+  }, 800);
+}
+
+// Style presets
+const STYLE_PRESETS = {
+  anime: 'Illustrated anime style. Characters have dot eyes (simple round black dots — NO detailed iris/pupil rendering). Soft cel-shading with vibrant colors. Cinematic 16:9 widescreen compositions. Atmospheric lighting with volumetric effects. Consistent character proportions.',
+  cinematic: 'Photorealistic cinematic style. Natural lighting with dramatic shadows. Film-grain texture. 16:9 anamorphic widescreen. Shallow depth of field. Rich color grading with teal and orange tones. Professional cinematography composition.',
+  pixar: '3D animated Pixar-style rendering. Smooth subsurface scattering on skin. Expressive cartoon proportions. Vibrant saturated colors. Dramatic Pixar-style lighting. 16:9 widescreen. Detailed environments with stylized textures.',
+  comic: 'Bold comic book / graphic novel style. Strong black outlines. Halftone dots for shading. Dynamic panel-style compositions. Vibrant primary colors. Dramatic angles and foreshortening. 16:9 format.',
+  watercolor: 'Delicate watercolor illustration style. Soft bleeding edges. Visible paper texture. Pastel and muted color palette. Ethereal and dreamy atmosphere. Gentle lighting. 16:9 compositions.',
+  noir: 'Film noir style. High contrast black and white with selective color accents. Dramatic chiaroscuro lighting. Deep shadows. Venetian blind shadows. Rain-slicked streets. 16:9 cinematic framing.',
+  pixel: 'Detailed pixel art style. 16-bit era aesthetics. Limited but carefully chosen color palette. Dithering for gradients. Clean pixel-perfect edges. Atmospheric pixel lighting. 16:9 aspect ratio.',
+  sketch: 'Hand-drawn pencil sketch style. Visible pencil strokes and cross-hatching. Rough charcoal textures. Minimal color — mostly graphite tones. Dynamic gestural lines. 16:9 composition. Studio Ghibli sketch-like quality.'
+};
+
+// ═══════════════════════════════════════════════════════════
+// INDEXED DB — PERSISTENT STORAGE ENGINE
+// ═══════════════════════════════════════════════════════════
+let db, CP = null, wizIdx = 0, refT = 'style';
+
+function odb(){
+  return new Promise((res, rej) => {
+    const r = indexedDB.open('StoryboardNexus', 2);
+    r.onupgradeneeded = e => {
+      const d = e.target.result;
+      if(!d.objectStoreNames.contains('projects')){
+        d.createObjectStore('projects', { keyPath: 'id' });
+      }
+      if(!d.objectStoreNames.contains('refs')){
+        const s = d.createObjectStore('refs', { keyPath: 'id' });
+        s.createIndex('pid', 'pid');
+      }
+      if(!d.objectStoreNames.contains('shots')){
+        const s = d.createObjectStore('shots', { keyPath: 'id' });
+        s.createIndex('pid', 'pid');
+      }
+      if(!d.objectStoreNames.contains('settings')){
+        d.createObjectStore('settings', { keyPath: 'key' });
+      }
+    };
+    r.onsuccess = e => { db = e.target.result; res() };
+    r.onerror = rej;
+  });
+}
+
+const Pdb = (store, obj) => new Promise((res, rej) => {
+  const tx = db.transaction(store, 'readwrite');
+  tx.objectStore(store).put(obj);
+  tx.oncomplete = () => res(obj);
+  tx.onerror = rej;
+});
+
+const Gdb = (store, id) => new Promise((res, rej) => {
+  const tx = db.transaction(store);
+  const q = tx.objectStore(store).get(id);
+  q.onsuccess = () => res(q.result);
+  q.onerror = rej;
+});
+
+const Adb = store => new Promise((res, rej) => {
+  const tx = db.transaction(store);
+  const q = tx.objectStore(store).getAll();
+  q.onsuccess = () => res(q.result);
+  q.onerror = rej;
+});
+
+const Idb = (store, idx, val) => new Promise((res, rej) => {
+  const tx = db.transaction(store);
+  const q = tx.objectStore(store).index(idx).getAll(val);
+  q.onsuccess = () => res(q.result);
+  q.onerror = rej;
+});
+
+const Ddb = (store, id) => new Promise((res, rej) => {
+  const tx = db.transaction(store, 'readwrite');
+  tx.objectStore(store).delete(id);
+  tx.oncomplete = res;
+  tx.onerror = rej;
+});
+
+// Save/load settings
+async function saveSetting(key, value){
+  await Pdb('settings', { key, value });
+}
+async function getSetting(key){
+  const r = await Gdb('settings', key);
+  return r ? r.value : null;
+}
+
+// Update storage info
+async function updateStorageInfo(){
+  const el = document.getElementById('storage-info');
+  if(!el) return;
+  try {
+    if(navigator.storage && navigator.storage.estimate){
+      const est = await navigator.storage.estimate();
+      const usedMB = (est.usage / (1024 * 1024)).toFixed(1);
+      const totalMB = (est.quota / (1024 * 1024)).toFixed(0);
+      el.textContent = `💾 ${usedMB} MB used of ${totalMB} MB`;
+    } else {
+      const ps = await Adb('projects');
+      el.textContent = `💾 ${ps.length} project${ps.length !== 1 ? 's' : ''} stored`;
+    }
+  } catch(e){
+    el.textContent = '💾 Storage active';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROJECT MANAGEMENT
+// ═══════════════════════════════════════════════════════════
+async function loadProjects(){
+  const ps = await Adb('projects');
+  ps.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  const el = document.getElementById('plist');
+
+  if(!ps.length){
+    el.innerHTML = '<div class="empty" style="padding:24px"><div class="ic" style="font-size:28px">📁</div><p class="text-xs text-dim">No projects yet</p></div>';
+    return;
+  }
+
+  const shots = await Adb('shots');
+  const countMap = {};
+  const doneMap = {};
+  shots.forEach(s => {
+    countMap[s.pid] = (countMap[s.pid] || 0) + 1;
+    if(s.img) doneMap[s.pid] = (doneMap[s.pid] || 0) + 1;
+  });
+
+  el.innerHTML = ps.map(p => {
+    const total = countMap[p.id] || 0;
+    const done = doneMap[p.id] || 0;
+    const dateStr = p.updatedAt ? new Date(p.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+    return `
+    <div class="pi ${p.id === CP ? 'active' : ''}" onclick="loadProj('${p.id}')">
+      <span class="pi-title">${esc(p.title)}</span>
+      ${total ? `<span class="pi-count">${done}/${total}</span>` : ''}
+      <button class="pi-del btn-xs" onclick="event.stopPropagation();delProj('${p.id}')">×</button>
+    </div>`;
+  }).join('');
+}
+
+async function createProj(){
+  const t = document.getElementById('inp-title').value.trim();
+  if(!t) return toast('Enter a project title', 'warning');
+
+  const preset = document.getElementById('inp-preset').value;
+  const custom = document.getElementById('inp-qstyle').value.trim();
+
+  let style = STYLE_PRESETS[preset] || '';
+  if(custom){
+    style = style ? style + '\n\nAdditional notes: ' + custom : custom;
+  }
+  if(!style){
+    style = 'Cinematic illustrated style. 16:9 widescreen. Atmospheric lighting. Consistent character designs across all frames.';
+  }
+
+  const p = {
+    id: uid(),
+    title: t,
+    script: '',
+    style: style,
+    chars: [],
+    locs: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  };
+
+  await Pdb('projects', p);
+  document.getElementById('inp-title').value = '';
+  document.getElementById('inp-qstyle').value = '';
+  document.getElementById('inp-preset').value = '';
+  closeMo('mo-new');
+  await loadProjects();
+  await loadProj(p.id);
+  toast(`"${t}" created`, 'success', '🎬');
+  updateStorageInfo();
+}
+
+async function delProj(id){
+  if(!confirm('Delete this project and all its shots & references?')) return;
+  await Ddb('projects', id);
+  const refs = await Idb('refs', 'pid', id);
+  for(const r of refs) await Ddb('refs', r.id);
+  const shots = await Idb('shots', 'pid', id);
+  for(const s of shots) await Ddb('shots', s.id);
+  if(CP === id){
+    CP = null;
+    document.getElementById('workspace').style.display = 'none';
+    document.getElementById('welcome').style.display = 'flex';
+  }
+  await loadProjects();
+  toast('Project deleted', 'info');
+  updateStorageInfo();
+}
+
+function delCurProj(){ if(CP) delProj(CP) }
+
+async function loadProj(id){
+  CP = id;
+  wizIdx = 0;
+  const p = await Gdb('projects', id);
+  if(!p) return;
+
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('workspace').style.display = 'flex';
+  document.getElementById('ptitle').textContent = p.title;
+  document.getElementById('ta-script').value = p.script || '';
+  document.getElementById('ta-style').value = p.style || '';
+
+  await saveSetting('lastProject', id);
+  await loadProjects();
+  renderChars(); renderLocs(); renderRefs(); renderShots(); renderStats();
+  stab('script');
+  updateProgress();
+}
+
+async function proj(){ return CP ? await Gdb('projects', CP) : null }
+async function saveP(p){ p.updatedAt = Date.now(); await Pdb('projects', p); triggerAutoSave() }
+
+async function saveScript(){
+  const p = await proj(); if(!p) return;
+  p.script = document.getElementById('ta-script').value;
+  await saveP(p);
+  toast('Script saved', 'success');
+}
+
+async function saveStyle(){
+  const p = await proj(); if(!p) return;
+  p.style = document.getElementById('ta-style').value;
+  await saveP(p);
+  toast('Style bible saved', 'success');
+}
+
+async function updateProgress(){
+  const shots = await getShots();
+  const done = shots.filter(s => s.img).length;
+  const el = document.getElementById('prog-txt');
+  if(el) el.textContent = `${done}/${shots.length}`;
+  const badge = document.getElementById('shots-badge');
+  if(badge) badge.textContent = shots.length;
+}
+
+async function renderStats(){
+  const shots = await getShots();
+  const p = await proj();
+  if(!p) return;
+  const done = shots.filter(s => s.img).length;
+  const el = document.getElementById('stats-row');
+  if(!el) return;
+  el.innerHTML = `
+    <div class="stat-cell"><div class="stat-num">${shots.length}</div><div class="stat-lbl">Shots</div></div>
+    <div class="stat-cell"><div class="stat-num">${done}</div><div class="stat-lbl">Generated</div></div>
+    <div class="stat-cell"><div class="stat-num">${(p.chars || []).length}</div><div class="stat-lbl">Characters</div></div>
+    <div class="stat-cell"><div class="stat-num">${(p.locs || []).length}</div><div class="stat-lbl">Locations</div></div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXPORT / IMPORT
+// ═══════════════════════════════════════════════════════════
+async function exportProject(){
+  if(!CP) return toast('No project selected', 'warning');
+  const p = await proj();
+  const shots = await getShots();
+  const refs = await Idb('refs', 'pid', CP);
+
+  const exportData = {
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    project: p,
+    shots: shots,
+    refs: refs
+  };
+
+  const json = JSON.stringify(exportData);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const name = (p.title || 'project').replace(/[^a-z0-9]/gi, '_') + '_export.json';
+  dlDataUrl(url, name);
+  URL.revokeObjectURL(url);
+  closeMo('mo-export');
+  toast('Project exported!', 'success', '📦');
+}
+
+async function importProject(){
+  const fileInput = document.getElementById('import-file');
+  const file = fileInput.files[0];
+  if(!file) return toast('Select a JSON file first', 'warning');
+
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+
+    if(!data.project) return toast('Invalid export file', 'error');
+
+    // Generate new IDs to avoid conflicts
+    const idMap = {};
+    const newPid = uid();
+    idMap[data.project.id] = newPid;
+
+    const p = { ...data.project, id: newPid, updatedAt: Date.now() };
+    await Pdb('projects', p);
+
+    if(data.shots){
+      for(const s of data.shots){
+        const newSid = uid();
+        idMap[s.id] = newSid;
+        await Pdb('shots', { ...s, id: newSid, pid: newPid });
+      }
+    }
+
+    // Update anchor references in chars/locs
+    if(p.chars){
+      for(const c of p.chars){
+        if(c.anchorShotId && idMap[c.anchorShotId]) c.anchorShotId = idMap[c.anchorShotId];
+      }
+    }
+    if(p.locs){
+      for(const l of p.locs){
+        if(l.anchorShotId && idMap[l.anchorShotId]) l.anchorShotId = idMap[l.anchorShotId];
+      }
+    }
+    await Pdb('projects', p);
+
+    if(data.refs){
+      for(const r of data.refs){
+        await Pdb('refs', { ...r, id: uid(), pid: newPid });
+      }
+    }
+
+    closeMo('mo-import');
+    await loadProjects();
+    await loadProj(newPid);
+    toast(`"${p.title}" imported!`, 'success', '📥');
+    updateStorageInfo();
+  } catch(e){
+    toast('Import failed: ' + e.message, 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHARACTERS & LOCATIONS
+// ═══════════════════════════════════════════════════════════
+async function renderChars(){
+  const p = await proj(); if(!p) return;
+  const el = document.getElementById('char-list');
+  if(!p.chars?.length){
+    el.innerHTML = '<p class="text-xs text-dim">Parse your script to auto-discover characters, or add manually.</p>';
+    return;
+  }
+  const shots = await getShots();
+  el.innerHTML = p.chars.map((c, i) => {
+    const a = c.anchorShotId ? shots.find(s => s.id === c.anchorShotId) : null;
+    return `<div class="entity-card">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <input value="${esc(c.name)}" placeholder="Character name" onchange="updChar(${i},'name',this.value)" style="font-weight:700">
+        <textarea rows="2" placeholder="Appearance description..." onchange="updChar(${i},'desc',this.value)">${esc(c.desc || '')}</textarea>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        ${a ? `<span class="anchor-badge">⭐ Shot ${a.idx}</span>` : '<span class="anchor-badge no-anchor">No anchor</span>'}
+        <button class="btn-danger btn-xs" onclick="rmChar(${i})">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function updChar(i, f, v){ const p = await proj(); if(!p) return; p.chars[i][f] = v; await saveP(p) }
+async function addChar(){
+  const p = await proj(); if(!p) return;
+  p.chars.push({ name: '', desc: '', anchorShotId: null });
+  await saveP(p); renderChars();
+}
+async function rmChar(i){ const p = await proj(); p.chars.splice(i, 1); await saveP(p); renderChars() }
+
+async function renderLocs(){
+  const p = await proj(); if(!p) return;
+  const el = document.getElementById('loc-list');
+  if(!p.locs?.length){
+    el.innerHTML = '<p class="text-xs text-dim">No locations yet.</p>';
+    return;
+  }
+  const shots = await getShots();
+  el.innerHTML = p.locs.map((l, i) => {
+    const a = l.anchorShotId ? shots.find(s => s.id === l.anchorShotId) : null;
+    return `<div class="entity-card">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <input value="${esc(l.name)}" placeholder="Location name" onchange="updLoc(${i},'name',this.value)" style="font-weight:700">
+        <textarea rows="2" placeholder="Visual description…" onchange="updLoc(${i},'desc',this.value)">${esc(l.desc || '')}</textarea>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end">
+        ${a ? `<span class="anchor-badge">⭐ Shot ${a.idx}</span>` : '<span class="anchor-badge no-anchor">No anchor</span>'}
+        <button class="btn-danger btn-xs" onclick="rmLoc(${i})">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function updLoc(i, f, v){ const p = await proj(); if(!p) return; p.locs[i][f] = v; await saveP(p) }
+async function addLoc(){
+  const p = await proj(); if(!p) return;
+  p.locs.push({ name: '', desc: '', anchorShotId: null });
+  await saveP(p); renderLocs();
+}
+async function rmLoc(i){ const p = await proj(); p.locs.splice(i, 1); await saveP(p); renderLocs() }
+
+async function autoDiscover(parsedShots){
+  const p = await proj(); if(!p) return;
+  const existingChars = new Set((p.chars || []).map(c => c.name.toLowerCase()));
+  const existingLocs = new Set((p.locs || []).map(l => l.name.toLowerCase()));
+
+  for(const s of parsedShots){
+    const chars = Array.isArray(s.characters) ? s.characters : (s.characters || '').split(',').map(x => x.trim()).filter(Boolean);
+    for(const c of chars){
+      if(c && !existingChars.has(c.toLowerCase())){
+        p.chars.push({ name: c, desc: '', anchorShotId: null });
+        existingChars.add(c.toLowerCase());
+      }
+    }
+    const loc = (s.location || '').trim();
+    if(loc && !existingLocs.has(loc.toLowerCase())){
+      p.locs.push({ name: loc, desc: '', anchorShotId: null });
+      existingLocs.add(loc.toLowerCase());
+    }
+  }
+  await saveP(p); renderChars(); renderLocs(); renderStats();
+}
+
+// ═══════════════════════════════════════════════════════════
+// REFERENCES
+// ═══════════════════════════════════════════════════════════
+function pickRef(t){ refT = t; document.getElementById('ref-input').click() }
+function rOver(e){ e.preventDefault(); e.currentTarget.classList.add('dragover') }
+function rLeave(e){ e.currentTarget.classList.remove('dragover') }
+function rDrop(e){
+  e.preventDefault(); e.currentTarget.classList.remove('dragover');
+  refT = e.currentTarget.dataset.type;
+  processRefs(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+}
+function refPicked(e){ processRefs(Array.from(e.target.files)); e.target.value = '' }
+
+async function processRefs(files){
+  if(!CP || !files.length) return;
+  for(const f of files){
+    const d = await readF(f);
+    await Pdb('refs', { id: uid(), pid: CP, type: refT, label: f.name, data: d });
+  }
+  renderRefs();
+  toast(`${files.length} reference${files.length > 1 ? 's' : ''} added`, 'success', '🖼');
+  updateStorageInfo();
+}
+
+async function renderRefs(){
+  if(!CP) return;
+  const refs = await Idb('refs', 'pid', CP);
+  for(const t of ['style', 'character', 'environment']){
+    const el = document.getElementById('refs-' + t);
+    const filtered = refs.filter(r => r.type === t);
+    el.innerHTML = filtered.map((r, i) => `
+      <div class="ref-thumb" onclick="showLB('${r.data.replace(/'/g, "\\'")}')">
+        <img src="${r.data}">
+        <button class="rm" onclick="event.stopPropagation();rmRef('${r.id}')">×</button>
+      </div>
+    `).join('');
+  }
+}
+
+async function rmRef(id){ await Ddb('refs', id); renderRefs(); updateStorageInfo() }
+
+// ═══════════════════════════════════════════════════════════
+// SHOTS + DRAG & DROP REORDER
+// ═══════════════════════════════════════════════════════════
+let dragShotId = null, ghostEl = null;
+
+async function getShots(){
+  if(!CP) return [];
+  const s = await Idb('shots', 'pid', CP);
+  s.sort((a, b) => a.idx - b.idx);
+  return s;
+}
+
+async function renderShots(){
+  const shots = await getShots();
+  const countEl = document.getElementById('shot-count');
+  if(countEl) countEl.textContent = `${shots.length} shot${shots.length !== 1 ? 's' : ''}`;
+
+  const badge = document.getElementById('shots-badge');
+  if(badge) badge.textContent = shots.length;
+
+  const el = document.getElementById('shots-list');
+  if(!shots.length){
+    el.innerHTML = '<div class="empty"><div class="ic">🎬</div><p>Parse your script above or add shots manually.</p></div>';
+    return;
+  }
+
+  el.innerHTML = shots.map((s, i) => `
+    <div class="shot-card" id="sc-${s.id}" draggable="true"
+      ondragstart="shotDragStart(event,'${s.id}')"
+      ondragend="shotDragEnd(event)"
+      ondragover="shotDragOver(event,'${s.id}')"
+      ondrop="shotDrop(event,'${s.id}')"
+      ondragleave="shotDragLeave(event)">
+      <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
+      <div class="shot-top">
+        <div class="sn ${s.img ? 'done' : ''}">${s.idx}</div>
+        <input value="${esc(s.title || '')}" placeholder="Shot title" onchange="usf('${s.id}','title',this.value)">
+        <span class="shot-status ${s.img ? 'status-done' : 'status-pending'}">${s.img ? '✓ Done' : 'Pending'}</span>
+        ${s.img ? `<div class="shot-thumb" onclick="showLB(this.querySelector('img').src)"><img src="${s.img}"></div>` : ''}
+      </div>
+      <div class="sf">
+        <div><label>Description</label><textarea rows="2" onchange="usf('${s.id}','desc',this.value)">${esc(s.desc || '')}</textarea></div>
+        <div class="sr">
+          <div><label>Camera</label><input value="${esc(s.cam || '')}" onchange="usf('${s.id}','cam',this.value)" placeholder="Wide, Close-up…"></div>
+          <div><label>Mood</label><input value="${esc(s.mood || '')}" onchange="usf('${s.id}','mood',this.value)" placeholder="Tense, Peaceful…"></div>
+        </div>
+        <div class="sr">
+          <div><label>Characters</label><input value="${esc(s.chars || '')}" onchange="usf('${s.id}','chars',this.value)" placeholder="Alice, Bob…"></div>
+          <div><label>Location</label><input value="${esc(s.loc || '')}" onchange="usf('${s.id}','loc',this.value)" placeholder="City rooftop…"></div>
+        </div>
+        <div><label>Continuity Notes</label><input value="${esc(s.cont || '')}" onchange="usf('${s.id}','cont',this.value)" placeholder="Same outfit, overcast sky…"></div>
+      </div>
+      <div class="shot-actions">
+        ${i > 0 ? `<button class="btn-ghost btn-xs" onclick="mvShot('${s.id}',-1)" data-tip="Move up">↑</button>` : ''}
+        ${i < shots.length - 1 ? `<button class="btn-ghost btn-xs" onclick="mvShot('${s.id}',1)" data-tip="Move down">↓</button>` : ''}
+        <button class="btn-ghost btn-xs" onclick="dupShot('${s.id}')" data-tip="Duplicate">📋 Dup</button>
+        <button class="btn-glass btn-xs" onclick="goGenerate('${s.id}')" data-tip="Generate this shot">⚡ Generate</button>
+        <div class="flex-1"></div>
+        <button class="btn-danger btn-xs" onclick="delShot('${s.id}')">🗑</button>
+      </div>
+    </div>
+  `).join('');
+
+  updateProgress();
+}
+
+// Drag handlers
+function shotDragStart(e, id){
+  dragShotId = id;
+  const card = document.getElementById('sc-' + id);
+  card.classList.add('dragging');
+
+  ghostEl = document.createElement('div');
+  ghostEl.className = 'drag-ghost';
+  const title = card.querySelector('.shot-top input')?.value || 'Shot';
+  const shots = Array.from(document.querySelectorAll('.shot-card'));
+  const idx = shots.findIndex(c => c.id === 'sc-' + id);
+  ghostEl.innerHTML = `<div style="font-weight:800;color:var(--accent-2)">Shot ${idx + 1}</div><div style="color:var(--text-tertiary);font-size:11px;margin-top:2px">${esc(title)}</div>`;
+  document.body.appendChild(ghostEl);
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setDragImage(new Image(), 0, 0);
+}
+
+function shotDragEnd(e){
+  const card = document.getElementById('sc-' + dragShotId);
+  if(card) card.classList.remove('dragging');
+  if(ghostEl){ ghostEl.remove(); ghostEl = null }
+  dragShotId = null;
+  document.querySelectorAll('.shot-card').forEach(c => c.classList.remove('drag-over'));
+}
+
+function shotDragOver(e, id){
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  if(id === dragShotId) return;
+  document.querySelectorAll('.shot-card').forEach(c => c.classList.remove('drag-over'));
+  document.getElementById('sc-' + id)?.classList.add('drag-over');
+  if(ghostEl){
+    ghostEl.style.left = (e.clientX + 14) + 'px';
+    ghostEl.style.top = (e.clientY - 20) + 'px';
+  }
+}
+
+function shotDragLeave(e){
+  if(!e.currentTarget.contains(e.relatedTarget)) e.currentTarget.classList.remove('drag-over');
+}
+
+async function shotDrop(e, targetId){
+  e.preventDefault();
+  if(!dragShotId || dragShotId === targetId) return;
+  const shots = await getShots();
+  const fromIdx = shots.findIndex(s => s.id === dragShotId);
+  const toIdx = shots.findIndex(s => s.id === targetId);
+  if(fromIdx < 0 || toIdx < 0) return;
+  const [moved] = shots.splice(fromIdx, 1);
+  shots.splice(toIdx, 0, moved);
+  for(let i = 0; i < shots.length; i++){
+    shots[i].idx = i + 1;
+    await Pdb('shots', shots[i]);
+  }
+  renderShots();
+  toast('Shot reordered', 'info', '↕');
+}
+
+async function goGenerate(shotId){
+  const shots = await getShots();
+  const i = shots.findIndex(s => s.id === shotId);
+  if(i >= 0){ wizIdx = i; stab('generate') }
+}
+
+async function usf(id, f, v){
+  const s = await Gdb('shots', id); if(!s) return;
+  s[f] = v;
+  await Pdb('shots', s);
+  triggerAutoSave();
+}
+
+async function addShot(){
+  if(!CP) return;
+  const ss = await getShots();
+  await Pdb('shots', {
+    id: uid(), pid: CP, idx: ss.length + 1,
+    title: `Shot ${ss.length + 1}`, desc: '', cam: '', mood: '',
+    chars: '', loc: '', cont: '', prompt: '', img: null
+  });
+  renderShots();
+}
+
+async function delShot(id){
+  if(!confirm('Delete this shot?')) return;
+  await Ddb('shots', id);
+  await reIdx();
+  renderShots();
+  updateStorageInfo();
+}
+
+async function mvShot(id, dir){
+  const ss = await getShots();
+  const i = ss.findIndex(s => s.id === id);
+  const j = i + dir;
+  if(j < 0 || j >= ss.length) return;
+  [ss[i].idx, ss[j].idx] = [ss[j].idx, ss[i].idx];
+  await Pdb('shots', ss[i]);
+  await Pdb('shots', ss[j]);
+  renderShots();
+}
+
+async function dupShot(id){
+  const s = await Gdb('shots', id);
+  const ss = await getShots();
+  await Pdb('shots', { ...s, id: uid(), idx: ss.length + 1, img: null, prompt: '' });
+  renderShots();
+}
+
+async function reIdx(){
+  const ss = await getShots();
+  for(let i = 0; i < ss.length; i++){
+    ss[i].idx = i + 1;
+    await Pdb('shots', ss[i]);
+  }
+}
+
+async function clearAllShots(){
+  if(!CP) return;
+  const shots = await getShots();
+  if(!shots.length) return;
+  if(!confirm(`Delete all ${shots.length} shots?`)) return;
+  for(const s of shots) await Ddb('shots', s.id);
+  renderShots();
+  toast('All shots cleared', 'info');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PARSE PROMPT
+// ═══════════════════════════════════════════════════════════
+async function copyParsePrompt(){
+  const p = await proj();
+  if(!p?.script?.trim()) return toast('Write your script first', 'warning');
+
+  const prompt = `You are an expert cinematographer and storyboard artist.
+
+Break this script into individual storyboard SHOTS. Each shot = one camera setup = one AI-generated image.
+
+For each shot, output a JSON object with:
+- index (integer, starts at 1)
+- title (short 3-5 word shot title)
+- description (VERY detailed visual description for Gemini image generation: exact composition, lighting direction, color palette, character positions/expressions/poses, background elements, foreground elements, depth layers, atmospheric effects)
+- camera (angle & movement: Wide, Medium, Close-up, Extreme close-up, Over-the-shoulder, Low angle, High angle, POV, Dutch angle, Tracking shot, etc.)
+- mood (emotional tone + color temperature, e.g. "Warm golden hour, hopeful")
+- characters (JSON array of character NAME strings — be EXACTLY consistent with names across all shots)
+- location (location name string — be EXACTLY consistent with names across all shots)
+- continuityNotes (what MUST stay consistent from previous/next shot: wardrobe details, lighting direction, props in frame, time of day, weather, relative character positions)
+
+CRITICAL RULES:
+1. Every description needs: lighting direction, dominant colors, depth (foreground/midground/background), character body language if present
+2. Use IDENTICAL character names throughout ALL shots (no aliases)
+3. Use IDENTICAL location names throughout ALL shots
+4. Think in cuts: each shot advances the story and connects to adjacent shots
+5. Include at least 4-6 descriptive sentences per shot description
+6. Consider continuity between adjacent shots carefully
+
+Return ONLY a valid JSON array. NO markdown. NO backticks. NO explanation text. Just the raw array.
+
+SCRIPT:
+${p.script}`;
+
+  await navigator.clipboard.writeText(prompt);
+  toast('Parse prompt copied! Paste into Gemini →', 'success', '📋');
+}
+
+async function parseResponse(){
+  const raw = document.getElementById('ta-parse').value.trim();
+  if(!raw) return toast("Paste Gemini's JSON response first", 'warning');
+
+  let parsed;
+  try {
+    let clean = raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    parsed = JSON.parse(clean);
+  } catch(e){
+    return toast('Invalid JSON — check the response format', 'error');
+  }
+
+  if(!Array.isArray(parsed)) return toast('Expected a JSON array', 'error');
+
+  const old = await getShots();
+  if(old.length && !confirm(`Replace ${old.length} existing shot(s) with ${parsed.length} new shots?`)) return;
+
+  for(const s of old) await Ddb('shots', s.id);
+
+  for(let i = 0; i < parsed.length; i++){
+    const q = parsed[i];
+    await Pdb('shots', {
+      id: uid(), pid: CP, idx: i + 1,
+      title: q.title || `Shot ${i + 1}`,
+      desc: q.description || '',
+      cam: q.camera || '',
+      mood: q.mood || '',
+      chars: Array.isArray(q.characters) ? q.characters.join(', ') : (q.characters || ''),
+      loc: q.location || '',
+      cont: q.continuityNotes || '',
+      prompt: '', img: null
+    });
+  }
+
+  document.getElementById('ta-parse').value = '';
+  await autoDiscover(parsed);
+  renderShots(); renderStats();
+  toast(`${parsed.length} shots created!`, 'success', '🎬');
+  updateStorageInfo();
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTINUITY ENGINE
+// ═══════════════════════════════════════════════════════════
+async function findCharRef(charName){
+  const p = await proj(); if(!p) return null;
+  const charDef = (p.chars || []).find(c => c.name.toLowerCase() === charName.toLowerCase());
+
+  // Priority 1: Anchor shot
+  if(charDef?.anchorShotId){
+    const s = await Gdb('shots', charDef.anchorShotId);
+    if(s?.img) return { type: 'anchor', shot: s, charDef, img: s.img, label: `Shot ${s.idx} (⭐ ${charName} anchor)` };
+  }
+
+  // Priority 2: Most recent shot with this character
+  const shots = await getShots();
+  for(let i = shots.length - 1; i >= 0; i--){
+    const s = shots[i];
+    if(s.img && s.chars && s.chars.toLowerCase().includes(charName.toLowerCase())){
+      return { type: 'recent', shot: s, charDef, img: s.img, label: `Shot ${s.idx} (recent ${charName})` };
+    }
+  }
+
+  // Priority 3: Uploaded character reference
+  const refs = await Idb('refs', 'pid', CP);
+  const cRefs = refs.filter(r => r.type === 'character');
+  if(cRefs.length) return { type: 'ref', ref: cRefs[0], charDef, img: cRefs[0].data, label: `${cRefs[0].label} (char ref)` };
+
+  // Priority 4: Text only
+  return charDef ? { type: 'text-only', charDef, img: null, label: `${charName} (text only)` } : null;
+}
+
+async function findLocRef(locName){
+  const p = await proj(); if(!p) return null;
+  const locDef = (p.locs || []).find(l => l.name.toLowerCase() === locName.toLowerCase());
+
+  if(locDef?.anchorShotId){
+    const s = await Gdb('shots', locDef.anchorShotId);
+    if(s?.img) return { type: 'anchor', shot: s, locDef, img: s.img, label: `Shot ${s.idx} (⭐ ${locName} anchor)` };
+  }
+
+  const shots = await getShots();
+  for(let i = shots.length - 1; i >= 0; i--){
+    const s = shots[i];
+    if(s.img && s.loc && s.loc.toLowerCase() === locName.toLowerCase()){
+      return { type: 'recent', shot: s, locDef, img: s.img, label: `Shot ${s.idx} (recent ${locName})` };
+    }
+  }
+
+  const refs = await Idb('refs', 'pid', CP);
+  const eRefs = refs.filter(r => r.type === 'environment');
+  if(eRefs.length) return { type: 'ref', ref: eRefs[0], locDef, img: eRefs[0].data, label: `${eRefs[0].label} (env ref)` };
+
+  return locDef ? { type: 'text-only', locDef, img: null, label: `${locName} (text only)` } : null;
+}
+
+async function buildChecklist(shot){
+  const refs = await Idb('refs', 'pid', CP);
+  const shots = await getShots();
+  const items = [];
+  let n = 0;
+  const seen = new Set();
+
+  // Style references
+  const styleRefs = refs.filter(r => r.type === 'style');
+  for(const sr of styleRefs){
+    n++;
+    items.push({
+      num: n, type: 'style', typeLabel: 'STYLE',
+      img: sr.data, label: sr.label,
+      reason: 'Match this art style exactly. Color palette, rendering technique, and overall aesthetic.'
+    });
+  }
+
+  // Character references
+  const charNames = (shot.chars || '').split(',').map(c => c.trim()).filter(Boolean);
+  for(const cn of charNames){
+    const ref = await findCharRef(cn);
+    if(ref?.img && !seen.has(ref.img)){
+      n++; seen.add(ref.img);
+      items.push({
+        num: n,
+        type: ref.type === 'anchor' ? 'anchor' : 'char',
+        typeLabel: ref.type === 'anchor' ? '⭐ ANCHOR' : 'CHARACTER',
+        img: ref.img,
+        label: `${cn} — ${ref.label}`,
+        reason: `${cn} MUST match this reference exactly: face, hair, clothing, proportions.`
+      });
+    }
+  }
+
+  // Location reference
+  if(shot.loc){
+    const ref = await findLocRef(shot.loc);
+    if(ref?.img && !seen.has(ref.img)){
+      n++; seen.add(ref.img);
+      items.push({
+        num: n,
+        type: ref.type === 'anchor' ? 'anchor' : 'loc',
+        typeLabel: ref.type === 'anchor' ? '⭐ ANCHOR' : 'LOCATION',
+        img: ref.img,
+        label: `${shot.loc} — ${ref.label}`,
+        reason: `Location must match: architecture, colors, props, atmosphere.`
+      });
+    }
+  }
+
+  // Previous frame for temporal continuity
+  const si = shots.findIndex(s => s.id === shot.id);
+  if(si > 0){
+    const prev = shots[si - 1];
+    if(prev.img && !seen.has(prev.img)){
+      n++; seen.add(prev.img);
+      items.push({
+        num: n, type: 'prev', typeLabel: 'PREVIOUS',
+        img: prev.img,
+        label: `Shot ${prev.idx}: ${prev.title || 'Previous frame'}`,
+        reason: 'Maintain visual continuity: lighting direction, time of day, spatial coherence.'
+      });
+    }
+  }
+
+  return items;
+}
+
+async function buildSmartPrompt(shot){
+  const p = await proj();
+  const checklist = await buildChecklist(shot);
+  const charNames = (shot.chars || '').split(',').map(c => c.trim()).filter(Boolean);
+  const lines = [];
+
+  lines.push('Generate a single storyboard frame image.\n');
+
+  lines.push('══════════════════════════════════\nVISUAL STYLE MANDATE\n══════════════════════════════════');
+  lines.push(p.style || 'Cinematic illustrated style, 16:9.');
+
+  if(checklist.length){
+    lines.push('\n══════════════════════════════════\nREFERENCE IMAGES (uploaded with this prompt)\n══════════════════════════════════');
+    lines.push(`${checklist.length} reference image(s) attached. Follow each precisely:\n`);
+    for(const it of checklist){
+      lines.push(`▸ Image ${it.num} [${it.typeLabel}]: ${it.label}`);
+      lines.push(`  → ${it.reason}\n`);
+    }
+  }
+
+  lines.push('══════════════════════════════════\nFRAME SPECIFICATION\n══════════════════════════════════');
+  lines.push(`Scene Description: ${shot.desc}`);
+  if(shot.cam) lines.push(`Camera: ${shot.cam}`);
+  if(shot.mood) lines.push(`Mood & Atmosphere: ${shot.mood}`);
+
+  if(shot.loc){
+    const ld = (p.locs || []).find(l => l.name.toLowerCase() === shot.loc.toLowerCase());
+    lines.push(`Setting: ${shot.loc}${ld?.desc ? ' — ' + ld.desc : ''}`);
+  }
+
+  if(charNames.length){
+    lines.push('\nCHARACTERS IN FRAME:');
+    for(const cn of charNames){
+      const cd = (p.chars || []).find(c => c.name.toLowerCase() === cn.toLowerCase());
+      const refNum = checklist.find(x => x.label.startsWith(cn))?.num;
+      lines.push(`• ${cn}${cd?.desc ? ': ' + cd.desc : ''}${refNum ? ' → MUST match Image ' + refNum + ' exactly.' : ''}`);
+    }
+  }
+
+  if(shot.cont){
+    lines.push('\nCONTINUITY REQUIREMENTS:');
+    lines.push(shot.cont);
+  }
+
+  const prevIt = checklist.find(x => x.type === 'prev');
+  if(prevIt){
+    lines.push(`\nThis frame follows Image ${prevIt.num}. Ensure smooth visual flow — consistent lighting, same time of day, spatial continuity.`);
+  }
+
+  lines.push('\n══════════════════════════════════\nOUTPUT REQUIREMENTS\n══════════════════════════════════');
+  lines.push('• Single cinematic storyboard frame');
+  lines.push('• 16:9 widescreen aspect ratio');
+  lines.push('• No text, UI, watermarks, borders, or split panels');
+  lines.push('• Consistent character designs matching all references');
+
+  return lines.join('\n');
+}
+
+// ═══════════════════════════════════════════════════════════
+// GENERATE WIZARD
+// ═══════════════════════════════════════════════════════════
+async function renderWiz(){
+  const shots = await getShots();
+  const el = document.getElementById('wiz-area');
+
+  if(!shots.length){
+    el.innerHTML = '<div class="empty"><div class="ic">⚡</div><p>Add shots first in the Shots tab.</p></div>';
+    return;
+  }
+
+  if(wizIdx >= shots.length) wizIdx = shots.length - 1;
+  if(wizIdx < 0) wizIdx = 0;
+
+  const s = shots[wizIdx];
+  const p = await proj();
+
+  s.prompt = await buildSmartPrompt(s);
+  await Pdb('shots', s);
+
+  const checklist = await buildChecklist(s);
+  const doneCount = shots.filter(x => x.img).length;
+  const pct = Math.round(doneCount / shots.length * 100);
+  const charNames = (s.chars || '').split(',').map(c => c.trim()).filter(Boolean);
+
+  el.innerHTML = `<div class="wiz">
+    <div class="wiz-nav">
+      <button class="btn-ghost btn-sm" ${wizIdx === 0 ? 'disabled' : ''} onclick="wizIdx--;renderWiz()">← Prev</button>
+      <div class="wiz-title">${s.idx}. ${esc(s.title || 'Untitled')}</div>
+      <button class="btn-ghost btn-sm" ${wizIdx >= shots.length - 1 ? 'disabled' : ''} onclick="wizIdx++;renderWiz()">Next →</button>
+    </div>
+
+    <div class="wiz-dots">${shots.map((x, i) =>
+      `<button class="wiz-dot ${x.img ? 'done' : ''} ${i === wizIdx ? 'cur' : ''}" onclick="wizIdx=${i};renderWiz()" title="${esc(x.title || 'Shot ' + (i+1))}"></button>`
+    ).join('')}</div>
+
+    <div class="progress-bar-outer"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+    <div class="wiz-progress">${doneCount} of ${shots.length} frames generated (${pct}%)</div>
+
+    <div class="step-box">
+      <div class="step-header"><div class="step-num">1</div><h4>Reference Images to Upload</h4></div>
+      ${checklist.length ? `
+        <p class="text-xs text-dim mb-3">Upload these images to Gemini <strong style="color:var(--accent-2)">in this exact numbered order</strong> along with the prompt below.</p>
+        <div class="flex gap-2 mb-3">
+          <button class="btn-amber btn-sm" onclick="dlChecklist()">⬇ Download All ${checklist.length} Images</button>
+        </div>
+        <div class="checklist">
+          ${checklist.map(it => `
+            <div class="check-item">
+              <div class="check-num">${it.num}</div>
+              <div class="check-thumb">${it.img ? `<img src="${it.img}" onclick="event.stopPropagation();showLB(this.src)">` : '—'}</div>
+              <div class="check-info">
+                <div class="label">${esc(it.label)}</div>
+                <div class="reason">${esc(it.reason.substring(0, 120))}${it.reason.length > 120 ? '…' : ''}</div>
+              </div>
+              <span class="check-type type-${it.type === 'anchor' ? 'anchor' : it.type}">${it.typeLabel}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : `<div class="warn-box">No reference images yet — add style/character/environment images in the <strong>References tab</strong>.</div>`}
+    </div>
+
+    <div class="step-box">
+      <div class="step-header"><div class="step-num">2</div><h4>Image Generation Prompt</h4></div>
+      <div class="prompt-box" id="prompt-box">${esc(s.prompt)}</div>
+      <div class="flex gap-2 mt-3 flex-wrap">
+        <button class="btn-primary" id="btn-cp" onclick="copyPromptBtn()">📋 Copy Prompt</button>
+        <button class="btn-ghost btn-sm" onclick="editPrompt()">✏ Edit</button>
+        <a href="https://gemini.google.com" target="_blank"><button class="btn-glass btn-sm">🔮 Open Gemini ↗</button></a>
+      </div>
+    </div>
+
+    <div class="step-box">
+      <div class="step-header"><div class="step-num">3</div><h4>Paste Generated Image</h4></div>
+      <div class="info-box" style="margin-bottom:16px">
+        <ol>
+          <li>Open <a href="https://gemini.google.com" target="_blank"><strong>gemini.google.com</strong></a></li>
+          ${checklist.filter(x => x.img).length ? `<li>Upload the <strong>${checklist.filter(x => x.img).length} reference image(s)</strong> in numbered order</li>` : ''}
+          <li>Paste the prompt from Step 2</li>
+          <li>Generate — then <strong>right-click → Copy image</strong></li>
+          <li>Come back here → <strong>Ctrl+V</strong> or drag below ↓</li>
+        </ol>
+      </div>
+      <div class="drop-zone ${s.img ? 'has-img' : ''}" id="dz"
+        ondrop="wizDrop(event)" ondragover="wizDO(event)" ondragleave="wizDL(event)"
+        ${s.img ? `onclick="showLB(document.querySelector('#dz img')?.src)"` : ''}>
+        ${s.img ? `<img src="${s.img}">` :
+          `<div class="dz-text"><div class="dz-icon">🖼</div><div style="font-weight:600;color:var(--text-primary)">Ctrl+V, drag, or click to upload</div><div class="text-xs text-dim mt-2">Supports paste, drag & drop, or file browser</div></div>`}
+      </div>
+      <div class="flex gap-2 mt-2">
+        ${s.img ? `
+          <button class="btn-ghost btn-sm" onclick="clearImg()">🗑 Clear</button>
+          <button class="btn-ghost btn-sm" onclick="dlDataUrl(document.querySelector('#dz img')?.src,'shot_${s.idx}.png')">⬇ Download</button>
+        ` : ''}
+        <input type="file" id="dz-file" accept="image/*" style="display:none" onchange="dzFilePick(event)">
+        ${!s.img ? `<button class="btn-glass btn-sm" onclick="document.getElementById('dz-file').click()">📁 Browse</button>` : ''}
+      </div>
+    </div>
+
+    ${s.img ? `
+    <div class="step-box">
+      <div class="step-header"><div class="step-num">4</div><h4>Set Continuity Anchors</h4></div>
+      <p class="text-xs text-dim mb-3">Mark this image as the definitive reference for a character or location. Future shots will use it.</p>
+      <div class="anchor-btns">
+        ${charNames.map(cn => {
+          const isSet = (p.chars || []).find(c => c.name.toLowerCase() === cn.toLowerCase() && c.anchorShotId === s.id);
+          return `<button class="anchor-btn ${isSet ? 'set' : ''}" onclick="setCharAnchor('${esc(cn).replace(/'/g, "\\'")}','${s.id}')">${isSet ? '⭐ ✓' : '⭐'} ${esc(cn)}</button>`;
+        }).join('')}
+        ${s.loc ? `<button class="anchor-btn ${(p.locs || []).find(l => l.name.toLowerCase() === s.loc.toLowerCase() && l.anchorShotId === s.id) ? 'set' : ''}" onclick="setLocAnchor('${esc(s.loc).replace(/'/g, "\\'")}','${s.id}')">📍 ${esc(s.loc)}</button>` : ''}
+      </div>
+    </div>
+    ` : ''}
+  </div>`;
+
+  window._checklist = checklist;
+  updateProgress();
+}
+
+function copyPromptBtn(){
+  const txt = document.getElementById('prompt-box')?.textContent || '';
+  const btn = document.getElementById('btn-cp');
+  navigator.clipboard.writeText(txt);
+  if(btn){
+    const o = btn.innerHTML;
+    btn.classList.add('btn-copied');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.classList.remove('btn-copied'); btn.innerHTML = o }, 1800);
+  }
+  toast('Prompt copied!', 'success', '📋');
+}
+
+async function setCharAnchor(charName, shotId){
+  const p = await proj();
+  const c = (p.chars || []).find(x => x.name.toLowerCase() === charName.toLowerCase());
+  if(!c) return toast('Character not found', 'warning');
+  c.anchorShotId = c.anchorShotId === shotId ? null : shotId;
+  await saveP(p); renderWiz(); renderChars();
+  toast(c.anchorShotId ? `Anchor set for ${charName}` : `Anchor cleared for ${charName}`, 'success', '⭐');
+}
+
+async function setLocAnchor(locName, shotId){
+  const p = await proj();
+  const l = (p.locs || []).find(x => x.name.toLowerCase() === locName.toLowerCase());
+  if(!l) return toast('Location not found', 'warning');
+  l.anchorShotId = l.anchorShotId === shotId ? null : shotId;
+  await saveP(p); renderWiz(); renderLocs();
+  toast(l.anchorShotId ? `Anchor set for ${locName}` : `Anchor cleared for ${locName}`, 'success', '⭐');
+}
+
+async function dlChecklist(){
+  const cl = window._checklist || [];
+  let count = 0;
+  for(let i = 0; i < cl.length; i++){
+    if(!cl[i].img) continue;
+    count++;
+    dlDataUrl(cl[i].img, `${String(cl[i].num).padStart(2, '0')}_${cl[i].type}_ref.png`);
+    await new Promise(r => setTimeout(r, 400));
+  }
+  if(count) toast(`${count} reference images downloaded`, 'success', '⬇');
+  else toast('No images to download', 'warning');
+}
+
+async function editPrompt(){
+  const shots = await getShots();
+  const s = shots[wizIdx]; if(!s) return;
+  const v = prompt('Edit the generation prompt:', s.prompt);
+  if(v === null) return;
+  s.prompt = v;
+  await Pdb('shots', s);
+  renderWiz();
+}
+
+// Drop zone handlers
+function wizDO(e){ e.preventDefault(); e.currentTarget.classList.add('dragover') }
+function wizDL(e){ e.currentTarget.classList.remove('dragover') }
+
+async function wizDrop(e){
+  e.preventDefault(); e.currentTarget.classList.remove('dragover');
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if(files.length){ const d = await readF(files[0]); await setWizImg(d); return }
+  const url = e.dataTransfer.getData('text/uri-list') || e.dataTransfer.getData('text/plain');
+  if(url?.startsWith('http')){ toast('Paste the image directly (Ctrl+V) for best results', 'info', '💡') }
+}
+
+async function dzFilePick(e){
+  const f = e.target.files[0]; if(!f) return;
+  const d = await readF(f);
+  await setWizImg(d);
+  e.target.value = '';
+}
+
+async function setWizImg(dataUrl){
+  const shots = await getShots();
+  const s = shots[wizIdx]; if(!s) return;
+  s.img = dataUrl;
+  await Pdb('shots', s);
+  toast(`Shot ${s.idx} saved!`, 'success', '🖼');
+
+  // Auto-advance to next unfinished shot
+  if(wizIdx < shots.length - 1){
+    wizIdx++;
+    setTimeout(() => renderWiz(), 500);
+  } else {
+    renderWiz();
+  }
+  updateProgress();
+  updateStorageInfo();
+}
+
+async function clearImg(){
+  const shots = await getShots();
+  const s = shots[wizIdx]; if(!s) return;
+  if(!confirm('Clear the generated image for this shot?')) return;
+  s.img = null;
+  await Pdb('shots', s);
+  renderWiz();
+}
+
+// Global paste
+document.addEventListener('paste', async e => {
+  if(!document.getElementById('tab-generate').classList.contains('active')) return;
+  const it = Array.from(e.clipboardData?.items || []).find(i => i.type.startsWith('image/'));
+  if(!it) return;
+  e.preventDefault();
+  const f = it.getAsFile(); if(!f) return;
+  const d = await readF(f);
+  await setWizImg(d);
+});
+
+// ═══════════════════════════════════════════════════════════
+// BOARD VIEW
+// ═══════════════════════════════════════════════════════════
+async function renderBoard(){
+  const shots = (await getShots()).filter(s => s.img);
+  const el = document.getElementById('board-grid');
+
+  if(!shots.length){
+    el.innerHTML = '<div class="empty"><div class="ic">🖼</div><p>Generate images first, then they\'ll appear here.</p></div>';
+    return;
+  }
+
+  el.innerHTML = shots.map(s => `
+    <div class="board-card" onclick="showLB('${s.img.replace(/'/g, "\\'")}')">
+      <img class="board-img" src="${s.img}">
+      <div class="board-info">
+        <h4><span class="board-num">${s.idx}</span>${esc(s.title || 'Untitled')}</h4>
+        <p>${esc(s.desc || '')}</p>
+        ${s.cam ? `<p style="color:var(--cyan);font-size:9px;margin-top:3px">📷 ${esc(s.cam)}</p>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function dlAll(){
+  const shots = (await getShots()).filter(s => s.img);
+  if(!shots.length) return toast('No generated images yet', 'warning');
+  for(const s of shots){
+    dlDataUrl(s.img, `shot_${String(s.idx).padStart(3, '0')}_${(s.title || '').replace(/[^a-z0-9]/gi, '_')}.png`);
+    await new Promise(r => setTimeout(r, 300));
+  }
+  toast(`${shots.length} images downloading…`, 'success', '⬇');
+}
+
+// ═══════════════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  // Escape closes modals and lightbox
+  if(e.key === 'Escape'){
+    document.getElementById('lightbox').classList.remove('show');
+    document.querySelectorAll('.mo.show').forEach(m => m.classList.remove('show'));
+  }
+
+  // Ctrl+N new project
+  if(e.ctrlKey && e.key === 'n' && !e.shiftKey){
+    e.preventDefault();
+    openMo('mo-new');
+    setTimeout(() => document.getElementById('inp-title')?.focus(), 100);
+  }
+
+  // Ctrl+S save
+  if(e.ctrlKey && e.key === 's'){
+    e.preventDefault();
+    if(CP){
+      saveScript();
+      saveStyle();
+    }
+  }
+
+  // Navigate wizard with arrow keys when on generate tab
+  if(document.getElementById('tab-generate').classList.contains('active')){
+    if(e.key === 'ArrowLeft' && wizIdx > 0){ wizIdx--; renderWiz() }
+    if(e.key === 'ArrowRight'){
+      getShots().then(shots => {
+        if(wizIdx < shots.length - 1){ wizIdx++; renderWiz() }
+      });
+    }
+  }
+
+  // Tab switching with number keys
+  if(e.altKey && !e.ctrlKey){
+    const tabs = ['script', 'refs', 'shots', 'generate', 'board'];
+    const num = parseInt(e.key);
+    if(num >= 1 && num <= 5){
+      e.preventDefault();
+      stab(tabs[num - 1]);
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// GLOBAL DRAG PREVENTION
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('dragover', e => {
+  if(!e.target.closest('.drop-zone,.ref-zone,.shots-container,.shot-card')) e.preventDefault();
+});
+document.addEventListener('drop', e => {
+  if(!e.target.closest('.drop-zone,.ref-zone,.shot-card')) e.preventDefault();
+});
+
+// Mouse move for drag ghost
+document.addEventListener('mousemove', e => {
+  if(ghostEl){
+    ghostEl.style.left = (e.clientX + 14) + 'px';
+    ghostEl.style.top = (e.clientY - 20) + 'px';
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// AUTO-SAVE SCRIPT & STYLE ON INPUT (debounced)
+// ═══════════════════════════════════════════════════════════
+let scriptSaveTimer = null, styleSaveTimer = null;
+
+document.addEventListener('input', e => {
+  if(e.target.id === 'ta-script'){
+    clearTimeout(scriptSaveTimer);
+    scriptSaveTimer = setTimeout(async () => {
+      const p = await proj();
+      if(p){
+        p.script = e.target.value;
+        await saveP(p);
+      }
+    }, 2000);
+  }
+  if(e.target.id === 'ta-style'){
+    clearTimeout(styleSaveTimer);
+    styleSaveTimer = setTimeout(async () => {
+      const p = await proj();
+      if(p){
+        p.style = e.target.value;
+        await saveP(p);
+      }
+    }, 2000);
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════
+(async () => {
+  await odb();
+  await loadProjects();
+  updateStorageInfo();
+
+  // Restore last project
+  const lastPid = await getSetting('lastProject');
+  if(lastPid){
+    const p = await Gdb('projects', lastPid);
+    if(p) await loadProj(lastPid);
+  }
+
+  // Enter to create project
+  document.getElementById('inp-title')?.addEventListener('keydown', e => {
+    if(e.key === 'Enter') createProj();
+  });
+
+  // Persist storage
+  if(navigator.storage && navigator.storage.persist){
+    navigator.storage.persist();
+  }
+})();
+</script>
+</body>
+</html>
